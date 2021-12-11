@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище SigmaDBModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Forms">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Email" Type="nvarchar" MaxLength="250" />
+    <Property Name="Password" Type="nchar" MaxLength="150" />
+  </EntityType>
+  <EntityType Name="Links">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Provider" Type="nvarchar" MaxLength="350" />
+    <Property Name="Link" Type="nvarchar(max)" />
+    <Property Name="user_id" Type="int" />
+  </EntityType>
+  <EntityType Name="Projects">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Title" Type="nvarchar" MaxLength="128" />
+    <Property Name="technology" Type="nvarchar" MaxLength="64" />
+    <Property Name="Description" Type="nvarchar" MaxLength="512" />
+    <Property Name="PhotoUrl" Type="nvarchar" MaxLength="1024" />
+    <Property Name="Link" Type="nvarchar" MaxLength="1024" />
+    <Property Name="About" Type="nvarchar(max)" />
+    <Property Name="user_id" Type="int" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="128" />
+    <Property Name="Description" Type="nvarchar" MaxLength="1024" />
+    <Property Name="avatarUrl" Type="nvarchar" MaxLength="1024" />
+    <Property Name="about" Type="nvarchar" MaxLength="1024" />
+    <Property Name="position" Type="nvarchar" MaxLength="128" />
+  </EntityType>
+  <EntityContainer Name="Хранилище SigmaDBModelContainer">
+    <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+  </EntityContainer>
+</Schema>

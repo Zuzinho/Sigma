@@ -1,0 +1,30 @@
+﻿@model ValueTuple<List<Sigma.Models.Project>,Sigma.Models.User>
+@{
+    Layout = "//Views//MasterView.cshtml";
+}
+
+<img class="image" src="@Model.Item2.avatarUrl"></img>
+<div class="user-info__row">
+    <div class="user-title__row">
+        <div class="user__name">@Model.Item2.Name</div>
+        <div class="user__skill">@Model.Item2.position</div>
+    </div>
+    <div class="user__description">
+        @Model.Item2.Description
+    </div>
+</div>
+<div class="portfolios__row">
+    @foreach (var project in Model.Item1)
+    {
+        if(project.user_id == Model.Item2.Id) { 
+    <div class="portfolio__item item">
+        <div class="item__title">
+            <div class="skill__info">@project.Title</div>
+            <div class="skill__name"><p>@project.technology</p></div>
+        </div>
+        <div class="item_description">@project.Description</div>
+    </div>
+    }
+    }
+
+</div>
