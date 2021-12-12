@@ -121,6 +121,5 @@ namespace Sigma.Controllers
                 return RedirectToAction("Sign_in","Home");
             }
         }
-
     }
 }

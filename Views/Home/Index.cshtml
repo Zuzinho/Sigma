@@ -39,8 +39,8 @@
             <p class="find">
                 Find specialists
             </p>
-            <form action="#">
-                <input type="search" placeholder="Search for skills or projects">
+            <form asp-controller="Home" asp-action="Search">
+                <input type="text" name="order" placeholder="Search for skills or projects">
                 <button type="submit" class="search">Search</button>
             </form>
         </div>
