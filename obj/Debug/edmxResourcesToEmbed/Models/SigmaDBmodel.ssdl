@@ -6,7 +6,7 @@
     </Key>
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Email" Type="nvarchar" MaxLength="250" />
-    <Property Name="Password" Type="nchar" MaxLength="150" />
+    <Property Name="Password" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="Links">
     <Key>
@@ -29,6 +29,7 @@
     <Property Name="Link" Type="nvarchar" MaxLength="1024" />
     <Property Name="About" Type="nvarchar(max)" />
     <Property Name="user_id" Type="int" />
+    <Property Name="user_name" Type="nvarchar" MaxLength="128" />
   </EntityType>
   <EntityType Name="Users">
     <Key>

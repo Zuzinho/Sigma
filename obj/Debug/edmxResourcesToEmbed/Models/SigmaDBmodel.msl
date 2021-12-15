@@ -14,6 +14,7 @@
     <EntitySetMapping Name="Projects">
       <EntityTypeMapping TypeName="SigmaDBModel.Project">
         <MappingFragment StoreEntitySet="Projects">
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
           <ScalarProperty Name="technology" ColumnName="technology" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Title" ColumnName="Title" />

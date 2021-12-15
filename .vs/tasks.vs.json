@@ -1,0 +1,20 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskLabel": "задача-Sigma",
+      "appliesTo": "bin/Sigma.dll",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "задача-Sigma",
+      "appliesTo": "bin/Sigma.dll",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "задача-Sigma",
+      "appliesTo": "/",
+      "type": "launch"
+    }
+  ]
+}

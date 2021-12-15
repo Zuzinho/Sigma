@@ -11,7 +11,7 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Email" Type="nvarchar" MaxLength="250" />
-          <Property Name="Password" Type="nchar" MaxLength="150" />
+          <Property Name="Password" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="Links">
           <Key>
@@ -34,6 +34,7 @@
           <Property Name="Link" Type="nvarchar" MaxLength="1024" />
           <Property Name="About" Type="nvarchar(max)" />
           <Property Name="user_id" Type="int" />
+          <Property Name="user_name" Type="nvarchar" MaxLength="128" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -77,6 +78,7 @@
           <Property Name="About" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="user_id" Type="Int32" />
           <Property Name="technology" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+          <Property Name="user_name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -101,7 +103,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Password" Type="String" MaxLength="150" FixedLength="true" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -122,6 +124,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="SigmaDBModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
                 <ScalarProperty Name="technology" ColumnName="technology" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Title" ColumnName="Title" />

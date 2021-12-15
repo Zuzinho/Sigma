@@ -4,7 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sigma.Models;
-
+using System.Threading.Tasks;
+using System.Data.Entity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Sigma.Controllers
 {
@@ -12,7 +14,7 @@ namespace Sigma.Controllers
     {
         public static int user_id = 0;
         private Models.Database1Entities db = new Models.Database1Entities();
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var projects = db.Projects.ToList();
             var users = db.Users.ToList();
@@ -120,6 +122,33 @@ namespace Sigma.Controllers
             {
                 return RedirectToAction("Sign_in","Home");
             }
+        }
+        [HttpGet]
+        public Task<ActionResult> Index(string order)
+        {
+            order = order.Trim().ToLower();
+            ViewData["order"] = order;
+            var ordquery = from x in db.Projects select x;
+            List<User> users_list = new List<User>();
+            List<Project> projects_list = new List<Project>();
+            if (!String.IsNullOrEmpty(order))
+            {
+                ordquery = ordquery.Where(x=>x.user_name.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order) || x.technology.Trim().ToLower().Contains(order));
+                foreach (var item in ordquery)
+                {
+                    var users = ordquery.Where(x => x.user_name.Trim().ToLower().Contains(order));
+                    var projects = ordquery.Where(x => x.technology.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order));
+                    projects_list.Add(item);
+                    users_list.Add(db.Users.FirstOrDefault(x => x.Id == item.user_id));
+                }
+                var list = (projects_list, users_list);
+                return View(list);
+            }
+            else
+            {
+                return View();
+            }
+
         }
     }
 }

@@ -21,6 +21,7 @@
     <Property Name="About" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="user_id" Type="Int32" />
     <Property Name="technology" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
+    <Property Name="user_name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
   </EntityType>
   <EntityType Name="User">
     <Key>
@@ -45,6 +46,6 @@
     </Key>
     <Property Name="Id" Type="Int32" Nullable="false" />
     <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-    <Property Name="Password" Type="String" MaxLength="150" FixedLength="true" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>
