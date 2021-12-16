@@ -3,46 +3,64 @@
     Layout = "//Views//MasterViewIndex.cshtml";
 }
 
-
 <div class="portfolios">
-    <div class="portfolios_title">Last Portfolios</div> 
-    <div class="portfolios__row">
-        @foreach (var user in Model.Item2)
-        {
-            int count = 0;
+    <div class="portfolios_title">Last Portfolios</div>
+    @if (Model.Item2.Count > 0)
+    {
+        <div class="portfolios__row">
+                @foreach(var user in Model.Item2) {
+                    int count = 0;
 
-            <a class="user_page" href="@Url.Action("UserPage","Home",new {item_id = user.Id})">
-                <div class="portfolios__item item">
-                    <div class="item__row">
-                        <div class="item__title">
-                            <img src="@user.avatarUrl" alt="" class="title__image">
-                            <div class="item__info">
-                                <p class="title_name">@user.Name</p>
-                                <p class="title_main_skill">@user.position</p>
-                            </div>
-                            <div class="item__skills">
-                                @foreach (var project in Model.Item1)
-                                {
-                                    if (project.user_id == user.Id)
-                                    {
-                                        <div class="item__skill skill">
-                                            <div class="skill__info">@project.Title</div>
-                                            <div class="skill__name"><p>@project.technology</p></div>
-                                        </div>
-                                        count++;
-                                        if (count == 3)
+                    <a class="user_page" href="@Url.Action("UserPage", "Home", new { item_id = user.Id })">
+                        <div class="portfolios__item item">
+                            <div class="item__row">
+                                <div class="item__title">
+                                    <img src="@user.avatarUrl" alt="" class="title__image">
+                                    <div class="item__info">
+                                        <p class="title_name">@user.Name</p>
+                                        <p class="title_main_skill">@user.position</p>
+                                    </div>
+                                    <div class="item__skills">
+                                        @foreach (var project in Model.Item1)
                                         {
-                                            break;
-                                        }
-                                    }
+                                            if (project.user_id == user.Id)
+                                            {
+                                                <div class="item__skill skill">
+                                                    <div class="skill__info">@project.Title</div>
+                                                    <div class="skill__name"><p>@project.technology</p></div>
+                                                </div>
+                                                count++;
+                                                if (count == 3)
+                                                {
+                                                    break;
+                                                }
+                                            }
 
-                                }
+                                        }
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </a>
-        }
+                    </a>
+                }
+        </div>
+    }
+    else
+    {
+        <div>
+            <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" />
+        </div>
+        <div>
+            <p class="error_text">What a crap! Nothing was found :(</p>
+        </div>
+    }
+    <div class="page_turner">
+        <div class="page_turner__row pages">
+            <div class="pages__arrow_left"></div>
+            <div class="pages__values">
+                <a href="@Url.Action("Index", "Home")">следующая страница</a>
+            </div>
+        </div>
     </div>
 </div>
 

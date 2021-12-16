@@ -247,7 +247,6 @@
     <Content Include="Views\Home\Sign_up.cshtml" />
     <Content Include="Views\Home\Sign_in.cshtml" />
     <Content Include="Views\MasterViewIndex.cshtml" />
-    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

@@ -6,20 +6,70 @@ using System.Web.Mvc;
 using Sigma.Models;
 using System.Threading.Tasks;
 using System.Data.Entity;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Sigma.Controllers
 {
     public class HomeController : Controller
     {
         public static int user_id = 0;
+        public static int page = 0;
         private Models.Database1Entities db = new Models.Database1Entities();
-        public IActionResult Index()
+        public ActionResult Index(string order)
         {
-            var projects = db.Projects.ToList();
-            var users = db.Users.ToList();
-            var view = (projects, users);
-            return View(view);
+            ViewData["order"] = order;
+            var ordquery = from x in db.Projects select x;
+            List<User> users_list = new List<User>();
+            List<Project> projects_list = new List<Project>();
+            if (!String.IsNullOrEmpty(order))
+            {
+                order = order.Trim().ToLower();
+                ordquery = ordquery.Where(x => x.user_name.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order) || x.technology.Trim().ToLower().Contains(order));
+                foreach (var item in ordquery)
+                {
+                    var projects = ordquery.Where(x => x.technology.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order));
+                    projects_list.Add(item);
+                    var user = db.Users.FirstOrDefault(x => x.Id == item.user_id);
+                    if (!users_list.Contains(user))
+                    {
+                        users_list.Add(user);   
+                    }
+                }
+                var users = db.Users.Where(x => x.Name.Trim().ToLower().Contains(order));
+                foreach(var user in users)
+                {
+                    if (!users_list.Contains(user))
+                    {
+                        users_list.Add(user);
+                    }
+                }
+                List<User> users_list_ = new List<User>();
+                for(int i = page * 16; i < (page + 1) * 16; i++)
+                {
+                    if (i >= users_list.Count)
+                    {
+                        break;
+                    }
+                    users_list_.Add(users_list[i]);
+                }
+                var view = (projects_list, users_list_);
+                return View(view);
+            }
+            else
+            {
+                var projects = db.Projects.ToList();
+                var user = db.Users.ToList();
+                List<User> users = new List<User>();
+                for (int i = page * 16; i < (page + 1) * 16; i++)
+                {
+                    if (i + page*16 >= user.Count)
+                    {
+                        break;
+                    }
+                    users.Add(user[i]);
+                }
+                var view = (projects, users);
+                return View(view);
+            }
         }
         public ActionResult UserPage(int item_id)
         {
@@ -122,33 +172,6 @@ namespace Sigma.Controllers
             {
                 return RedirectToAction("Sign_in","Home");
             }
-        }
-        [HttpGet]
-        public Task<ActionResult> Index(string order)
-        {
-            order = order.Trim().ToLower();
-            ViewData["order"] = order;
-            var ordquery = from x in db.Projects select x;
-            List<User> users_list = new List<User>();
-            List<Project> projects_list = new List<Project>();
-            if (!String.IsNullOrEmpty(order))
-            {
-                ordquery = ordquery.Where(x=>x.user_name.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order) || x.technology.Trim().ToLower().Contains(order));
-                foreach (var item in ordquery)
-                {
-                    var users = ordquery.Where(x => x.user_name.Trim().ToLower().Contains(order));
-                    var projects = ordquery.Where(x => x.technology.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order));
-                    projects_list.Add(item);
-                    users_list.Add(db.Users.FirstOrDefault(x => x.Id == item.user_id));
-                }
-                var list = (projects_list, users_list);
-                return View(list);
-            }
-            else
-            {
-                return View();
-            }
-
         }
     }
 }
