@@ -241,12 +241,22 @@ body{
 	text-transform: uppercase;
 }
 
-.error_image{
-	display:block;
-	height:290px;
-	margin:auto 0;
-	width:500px;
-	box-shadow:12px 12px #000000;
+.error_image {
+	display: block;
+	height: 290px;
+	width: 500px;
+	margin: auto 0;
+	box-shadow: 12px 12px #000000;
+}
+
+.error_text {
+	width: 398px;
+	height: 33px;
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 33px;
+	text-align: center;
+	color: #777777;
 }
 
 .footer {

@@ -3,8 +3,7 @@
     Layout = "//Views//MasterViewIndex.cshtml";
 }
 
-<div class="portfolios">
-    <div class="portfolios_title">Last Portfolios</div>
+<div class="portfolios">    <div class="portfolios_title">Last Portfolios</div>
     @if (Model.Item2.Count > 0)
     {
         <div class="portfolios__row">
@@ -48,7 +47,7 @@
     else
     {
         <div>
-            <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" />
+            <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" >
         </div>
         <div>
             <p class="error_text">What a crap! Nothing was found :(</p>
