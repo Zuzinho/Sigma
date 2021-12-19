@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>>
+﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>,  List<int>>
 @{
     Layout = "//Views//MasterViewIndex.cshtml";
 }
@@ -58,7 +58,14 @@
         <div class="page_turner__row pages">
             <div class="pages__arrow_left"></div>
             <div class="pages__values">
-                <a href="@Url.Action("Index", "Home")">следующая страница</a>
+                @if (Model.Item3.Count > 1)
+                {
+                if (Model.Item3[0] > 1)
+                {
+                <a href="@Url.Action("index", "Home", new { page = Model.Item3[0] - 1 })">предыдущая страница</a>
+                }
+                <a href="@Url.Action("Index", "Home", new { page = Model.Item3[0] + 1 })">следующая страница</a>
+                }   
             </div>
         </div>
     </div>
