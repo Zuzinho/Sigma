@@ -151,8 +151,8 @@ body{
 		height: 20px;
 		left: -30px;
 	}
-.portfolios{
-	margin:150px 100px 0 150px
+.portfolios {
+	margin: 150px 100px 0 150px;
 }
 .portfolios_title {
 	font-size: 36px;
@@ -254,6 +254,76 @@ body{
 	line-height: 33px;
 	text-align: center;
 	color: #777777;
+}
+
+.pages__values {
+	display: flex;
+	max-width:283px;
+	margin-top: 48px;
+	margin-bottom: 24px;
+	margin-right:0;
+	margin-left: auto;
+}
+
+.previous_page {
+	width: 32px;
+	height: 32px;
+	margin:0 8px 0 0;
+	background: url("/Content/img/icons/arrow-left.png") no-repeat 50% 3px;
+	background-size: cover;
+}
+
+.pages_list {
+	display: flex;
+	border: 2px solid #6625D4;
+	border-radius: 4px;
+	width: 205px;
+	height: 38px;
+	padding: 8px 16px;
+}
+
+.page_value {
+	width: 19px;
+	height: 22px;
+	font-size: 16px;
+	line-height: 22px;
+	color: #6625D4 ;
+	margin: 0px 12px 0 0;
+}
+
+	.page_value:last-child {
+		margin: 0;
+		width: 19px;
+		height: 22px;
+		font-size: 16px;
+		line-height: 22px;
+		color: #6625D4;
+	}
+
+.current_page_value {
+	width: 19px;
+	height: 22px;
+	font-size: 16px;
+	line-height: 22px;
+	color: #777777;
+	margin: 0px 12px 0 0;
+}
+
+.current_last_page_value {
+	margin: 0;
+	width: 19px;
+	height: 22px;
+	font-size: 16px;
+	line-height: 22px;
+	color: #777777;
+}
+
+.next_page {
+	width: 32px;
+	height: 32px;
+	margin: 0 0 0 8px;
+	background: url("/Content/img/icons/arrow-right.png") no-repeat 50% 3px;
+	background-size: cover;
 }
 
 .footer {

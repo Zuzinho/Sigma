@@ -13,7 +13,7 @@ namespace Sigma.Controllers
     {
         public static int user_id = 0;
         const int page = 1;
-        public int pageSize = 16;
+        public int pageSize = 2;
         private Models.Database1Entities db = new Models.Database1Entities();
         public ActionResult Index(string order,int page = page)
         {
