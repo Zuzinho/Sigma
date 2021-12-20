@@ -13,6 +13,7 @@ namespace Sigma.Controllers
     {
         public static int user_id = 0;
         const int page = 1;
+        public int pageSize = 16;
         private Models.Database1Entities db = new Models.Database1Entities();
         public ActionResult Index(string order,int page = page)
         {
@@ -43,7 +44,7 @@ namespace Sigma.Controllers
                     }
                 }
                 List<User> users_list_ = new List<User>();
-                for(int i = (page-1) * 16; i < (page) * 16; i++)
+                for(int i = (page-1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= users_list.Count)
                     {
@@ -52,9 +53,19 @@ namespace Sigma.Controllers
                     users_list_.Add(users_list[i]);
                 }
                 List<int> pages = new List<int>();
-                for (int i = 0; i < (users_list_.Count / 17) + 1; i++)
+                pages.Add(page);
+                int count = 0;
+                count = users_list.Count() / pageSize;
+                if (users_list.Count() % pageSize > 0)
                 {
-                    pages.Add(i + 1);
+                    count++;
+                }
+                for (int i = 0; i < count; i++)
+                {
+                    if (!pages.Contains(i + 1))
+                    {
+                        pages.Add(i + 1);
+                    }
                 }
                 var view = (projects_list, users_list_,pages);
                 return View(view);
@@ -64,7 +75,7 @@ namespace Sigma.Controllers
                 var projects = ordquery.ToList();
                 var user = db.Users.ToList();
                 List<User> users = new List<User>();
-                for (int i = (page-1) * 16; i < (page) * 16; i++)
+                for (int i = (page-1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= user.Count)
                     {
@@ -73,9 +84,19 @@ namespace Sigma.Controllers
                     users.Add(user[i]);
                 }
                 List<int> pages = new List<int>();
-                for(int i = 0; i < (users.Count/17) + 1; i++)
+                pages.Add(page);
+                int count = 0;
+                count = user.Count / pageSize;
+                if(user.Count% pageSize > 0)
                 {
-                    pages.Add(i + 1);
+                    count++;
+                }
+                for(int i=0; i<count; i++)
+                {
+                    if (!pages.Contains(i + 1))
+                    {
+                        pages.Add(i + 1);
+                    }
                 }
                 var view = (projects, users,pages);
                 return View(view);

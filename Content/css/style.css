@@ -152,7 +152,7 @@ body{
 		left: -30px;
 	}
 .portfolios{
-	margin: 102px 0 0 200px;
+	margin:150px 100px 0 150px
 }
 .portfolios_title {
 	font-size: 36px;
@@ -162,14 +162,9 @@ body{
 .portfolios__row{
 	display: flex;
 	flex-wrap: wrap;
-	margin:0 200px 0 0;
 }
 .user_page {
 	margin: 30px 60px 30px 0;
-	width:310px;
-}
-.user_page:nth-child(4n){
-	margin: 30px 0 30px 0;
 	width:310px;
 }
 .portfolios__item {
@@ -243,13 +238,15 @@ body{
 
 .error_image {
 	display: block;
+	filter: grayscale(100%);
 	height: 290px;
 	width: 500px;
-	margin: auto 0;
+	margin: 0 auto;
 	box-shadow: 12px 12px #000000;
 }
 
 .error_text {
+	margin:20px auto;
 	width: 398px;
 	height: 33px;
 	font-weight: 600;

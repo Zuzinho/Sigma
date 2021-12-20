@@ -48,7 +48,7 @@
     {
         <div>
             <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" >
-        </div>
+        </div>      
         <div>
             <p class="error_text">What a crap! Nothing was found :(</p>
         </div>
@@ -59,12 +59,21 @@
             <div class="pages__values">
                 @if (Model.Item3.Count > 1)
                 {
-                if (Model.Item3[0] > 1)
+                    int current_page = Model.Item3[0];
+                    Model.Item3.Sort();
+                    if (current_page > 1)
+                    {
+                <a href="@Url.Action("index", "Home", new { order = ViewData["order"],page = current_page - 1 })">предыдущая страница</a>
+                    }
+                    foreach(int page in Model.Item3)
                 {
-                <a href="@Url.Action("index", "Home", new { page = Model.Item3[0] - 1 })">предыдущая страница</a>
+                    <a href="@Url.Action("Index","Home",new { order = ViewData["order"],page = page})">@page</a>
                 }
-                <a href="@Url.Action("Index", "Home", new { page = Model.Item3[0] + 1 })">следующая страница</a>
-                }   
+                    if (current_page < Model.Item3.Max())
+                    {
+                <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = current_page + 1 })">следующая страница</a>
+                    }
+                }
             </div>
         </div>
     </div>
