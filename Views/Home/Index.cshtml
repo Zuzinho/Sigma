@@ -60,6 +60,7 @@
                 @if (Model.Item3.Count > 1)
                 {
                     int current_page = Model.Item3[0];
+                    Model.Item3.Remove(current_page);
                     Model.Item3.Sort();
                     if (current_page > 1)
                     {
