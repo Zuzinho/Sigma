@@ -13,7 +13,7 @@ namespace Sigma.Controllers
     {
         public static int user_id = 0;
         const int page = 1;
-        public int pageSize = 5;
+        public int pageSize = 2;
         private Models.Database1Entities db = new Models.Database1Entities();
         public ActionResult Index(string order,int page = page)
         {
@@ -52,18 +52,15 @@ namespace Sigma.Controllers
                     }
                     users_list_.Add(users_list[i]);
                 }
-                List<int> pages = new List<int>();
-                pages.Add(page);
                 int count = 0;
                 count = users_list.Count() / pageSize;
                 if (users_list.Count() % pageSize > 0)
                 {
                     count++;
                 }
-                for (int i = 0; i < count; i++)
-                {
-                    pages.Add(i + 1);
-                }
+                List<List<int>> pages_list = Paginations.paginations_list(count);
+                List<int> pages = pages_list[page - 1];
+                pages.Add(page);
                 var view = (projects_list, users_list_,pages);
                 return View(view);
             }
@@ -80,18 +77,15 @@ namespace Sigma.Controllers
                     }
                     users.Add(user[i]);
                 }
-                List<int> pages = new List<int>();
-                pages.Add(page);
                 int count = 0;
                 count = user.Count / pageSize;
                 if(user.Count% pageSize > 0)
                 {
                     count++;
                 }
-                for(int i=0; i<count; i++)
-                {
-                    pages.Add(i + 1);
-                }
+                List<List<int>> pages_list = Paginations.paginations_list(count);
+                List<int> pages = pages_list[page - 1];
+                pages.Add(page);
                 var view = (projects, users,pages);
                 return View(view);
             }

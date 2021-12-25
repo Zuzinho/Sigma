@@ -59,9 +59,8 @@
             <div class="pages__values">
                 @if (Model.Item3.Count > 1)
                 {
-                    int current_page = Model.Item3[0];
-                    Model.Item3.Remove(current_page);
-                    Model.Item3.Sort();
+                    int current_page = Model.Item3.Last();
+                    Model.Item3.RemoveAt(Model.Item3.Count-1);
                     if (current_page > 1)
                     {
                 <a href="@Url.Action("index", "Home", new { order = ViewData["order"],page = current_page - 1 })" class="previous_page"></a>
@@ -69,9 +68,13 @@
             <div class="pages_list">
                 @foreach (int page in Model.Item3)
                 {
-                    if (page != current_page)
+                    if (page != current_page && page>0)
                     {
                         <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="page_value">@page</a>
+                    }
+                    else if(page == 0)
+                    {
+                        <span class="page_value">...</span>
                     }
                     else if (page == Model.Item3.Max())
                     {
