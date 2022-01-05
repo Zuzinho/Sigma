@@ -207,7 +207,7 @@ body {
     }
 
 .portfolios {
-    margin: 150px 100px 0 150px;
+    margin:100px 150px 0 150px;
 }
 
 .portfolios_title {
@@ -219,10 +219,11 @@ body {
 .portfolios__row {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .user_page {
-    margin: 30px 60px 30px 0;
+    margin: 30px 0;
     width: 310px;
 }
 
@@ -346,9 +347,7 @@ body {
 .pages_list {
     width: 220px;
     height: 38px;
-    flex:0 0 auto;
     display: flex;
-    justify-content: space-between;
     border: 2px solid #6625D4;
     border-radius: 4px;
     padding: 8px 16px;
