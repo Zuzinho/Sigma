@@ -12,9 +12,10 @@ namespace Sigma.Controllers
     public class HomeController : Controller
     {
         public static int user_id = 0;
-        public static int page = 0;
+        const int page = 1;
+        public int pageSize = 2;
         private Models.Database1Entities db = new Models.Database1Entities();
-        public ActionResult Index(string order)
+        public ActionResult Index(string order,int page = page)
         {
             ViewData["order"] = order;
             var ordquery = from x in db.Projects select x;
@@ -43,7 +44,7 @@ namespace Sigma.Controllers
                     }
                 }
                 List<User> users_list_ = new List<User>();
-                for(int i = page * 16; i < (page + 1) * 16; i++)
+                for(int i = (page-1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= users_list.Count)
                     {
@@ -51,23 +52,41 @@ namespace Sigma.Controllers
                     }
                     users_list_.Add(users_list[i]);
                 }
-                var view = (projects_list, users_list_);
+                int count = 0;
+                count = users_list.Count() / pageSize;
+                if (users_list.Count() % pageSize > 0)
+                {
+                    count++;
+                }
+                List<List<int>> pages_list = Paginations.paginations_list(count);
+                List<int> pages = pages_list[page - 1];
+                pages.Add(page);
+                var view = (projects_list, users_list_,pages);
                 return View(view);
             }
             else
             {
-                var projects = db.Projects.ToList();
+                var projects = ordquery.ToList();
                 var user = db.Users.ToList();
                 List<User> users = new List<User>();
-                for (int i = page * 16; i < (page + 1) * 16; i++)
+                for (int i = (page-1) * pageSize; i < (page) * pageSize; i++)
                 {
-                    if (i + page*16 >= user.Count)
+                    if (i >= user.Count)
                     {
                         break;
                     }
                     users.Add(user[i]);
                 }
-                var view = (projects, users);
+                int count = 0;
+                count = user.Count / pageSize;
+                if(user.Count% pageSize > 0)
+                {
+                    count++;
+                }
+                List<List<int>> pages_list = Paginations.paginations_list(count);
+                List<int> pages = pages_list[page - 1];
+                pages.Add(page);
+                var view = (projects, users,pages);
                 return View(view);
             }
         }

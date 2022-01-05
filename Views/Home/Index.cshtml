@@ -1,10 +1,9 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>>
+﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>,  List<int>>
 @{
     Layout = "//Views//MasterViewIndex.cshtml";
 }
 
-<div class="portfolios">
-    <div class="portfolios_title">Last Portfolios</div>
+<div class="portfolios">    <div class="portfolios_title">Last Portfolios</div>
     @if (Model.Item2.Count > 0)
     {
         <div class="portfolios__row">
@@ -48,8 +47,8 @@
     else
     {
         <div>
-            <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" />
-        </div>
+            <img src="~/Content/img/searcherror.jpg" alt="" class="error_image" >
+        </div>      
         <div>
             <p class="error_text">What a crap! Nothing was found :(</p>
         </div>
@@ -58,7 +57,40 @@
         <div class="page_turner__row pages">
             <div class="pages__arrow_left"></div>
             <div class="pages__values">
-                <a href="@Url.Action("Index", "Home")">следующая страница</a>
+                @if (Model.Item3.Count > 1)
+                {
+                    int current_page = Model.Item3.Last();
+                    Model.Item3.RemoveAt(Model.Item3.Count-1);
+                    if (current_page > 1)
+                    {
+                <a href="@Url.Action("index", "Home", new { order = ViewData["order"],page = current_page - 1 })" class="previous_page"></a>
+                    }
+            <div class="pages_list">
+                @foreach (int page in Model.Item3)
+                {
+                    if (page != current_page && page>0)
+                    {
+                        <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="page_value">@page</a>
+                    }
+                    else if(page == 0)
+                    {
+                        <span class="page_value">...</span>
+                    }
+                    else if (page == Model.Item3.Max())
+                    {
+                        <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="current_last_page_value">@page</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="current_page_value">@page</a>
+                    }
+                }
+            </div>
+                    if (current_page < Model.Item3.Max())
+                    {
+                <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = current_page + 1 })" class="next_page"></a>
+                    }
+                }
             </div>
         </div>
     </div>
