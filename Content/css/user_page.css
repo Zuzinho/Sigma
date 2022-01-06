@@ -37,7 +37,6 @@ body{
 }
 
 .header{
-	overflow: hidden;
 }
 
 .header__row {
@@ -87,10 +86,51 @@ body{
 	font-size: 16px;
 	color: #000000;
 }
-.actions{
+.actions_dropdown {
+	position: relative;
+	display: inline-block;
+}
+.actions {
+	display: inline;
 	font-size: 16px;
 	line-height: 22px;
 	margin: 0 24px 0 0;
+}
+.actions_content {
+	display: none;
+	position: absolute;
+	right:-10px;
+}
+.actions_dropdown:hover .actions_content {
+	display: flex;
+	flex-direction: column;
+	width: 141px;
+	height: 138px;
+	border: 1px solid #000000;
+	box-shadow: 8px 8px 0px #000000;
+	border-radius: 4px;
+}
+.actions_content button {
+	background-color:#ffffff;
+	display: inline-block;
+	width: 138px;
+	height: 45px;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22px;
+	align-items: center;
+	padding: 10px 0;
+	text-align:center;
+}
+.delete {
+	color: #E92323;
+}
+.actions_content button:hover {
+	background-color: #ddd;
+}
+.add_project {
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
 }
 .about {
 	color: #000000;
@@ -147,7 +187,7 @@ body{
 	margin: 0 12px 0 0;
 	border: 1px solid #C4C4C4;
 }
-.user_link_border::last-child{
+.user_link_border:last-child{
 	display: inline-block;
 	width: 64px;
 	height: 64px;

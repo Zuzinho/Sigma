@@ -90,15 +90,21 @@ namespace Sigma.Controllers
                 return View(view);
             }
         }
-        public ActionResult UserPage(int item_id)
+        public ActionResult UserPage(int item_id = -1)
         {
+            if(item_id == null)
+            {
+                item_id = -1;
+            }
             var user = db.Users.FirstOrDefault(x => x.Id == item_id);
+            var projects = db.Projects.Where(x=>x.user_id == item_id).ToList();
             if (user == null)
             {
                 return Content("<h1>Страница не найдена</h1>");
             }
-            var projects = db.Projects.ToList();
-            var view = (projects, user);
+            List<bool> ids = new List<bool>();
+            ids.Add(item_id==user_id);
+            var view = (projects, user, ids);
             return View(view);
         }
         public ActionResult AboutPage()
@@ -119,7 +125,6 @@ namespace Sigma.Controllers
                 email = email.Trim();
                 password = email.Trim();
                 var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
-                Console.WriteLine(user);
                 if (user == null)
                 {
                     Form form = new Form
@@ -191,6 +196,20 @@ namespace Sigma.Controllers
             {
                 return RedirectToAction("Sign_in","Home");
             }
+        }
+        [HttpGet]
+        public ActionResult DeleteProfile()
+        {
+            var user_profile = db.Users.FirstOrDefault(x=>x.Id == user_id);
+            db.Users.Remove(user_profile);
+            var user_projects = db.Projects.Where(x => x.user_id == user_id);
+            foreach(var project in user_projects)
+            {
+                db.Projects.Remove(project);
+            }
+            db.SaveChanges();
+            user_id = 0;
+            return RedirectToAction("index","Home",new {page = 1});
         }
     }
 }
