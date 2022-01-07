@@ -11,11 +11,12 @@ namespace Sigma.Controllers
 {
     public class HomeController : Controller
     {
-        public static int user_id = 0;
-        const int page = 1;
-        public int pageSize = 12    ;
+        private static int user_id = 0;
+        public int pageSize = 12;
+        private static User user_profile = new User();
+        private static List<Project> user_projects = new List<Project>();
         private Models.Database1Entities db = new Models.Database1Entities();
-        public ActionResult Index(string order,int page = page)
+        public ActionResult Index(string order,int page = 1)
         {
             ViewData["order"] = order;
             var ordquery = from x in db.Projects select x;
@@ -92,19 +93,15 @@ namespace Sigma.Controllers
         }
         public ActionResult UserPage(int item_id = -1)
         {
-            if(item_id == null)
-            {
-                item_id = -1;
-            }
             var user = db.Users.FirstOrDefault(x => x.Id == item_id);
             var projects = db.Projects.Where(x=>x.user_id == item_id).ToList();
             if (user == null)
             {
                 return Content("<h1>Страница не найдена</h1>");
             }
-            List<bool> ids = new List<bool>();
-            ids.Add(item_id==user_id);
-            var view = (projects, user, ids);
+            bool is_owner;
+            is_owner = (item_id==user_id);
+            var view = (projects, user, is_owner);
             return View(view);
         }
         public ActionResult AboutPage()
@@ -112,7 +109,7 @@ namespace Sigma.Controllers
             return View();
         }
         [HttpGet]
-        public ActionResult Sign_up( )
+        public ActionResult Sign_up()
         {
             return View();
         }
@@ -138,6 +135,7 @@ namespace Sigma.Controllers
                     db.SaveChanges();
                     return RedirectToAction("UserPage", "Home", new { item_id = user_id });
                 }
+
                 else
                 {
                     return RedirectToAction("Sign_up", "Home");//Почта уже используется
@@ -168,6 +166,8 @@ namespace Sigma.Controllers
                     if (user.Password.Trim() == password)
                     {
                         user_id = user.Id;
+                        user_profile = db.Users.FirstOrDefault(x => x.Id == user_id);
+                        user_projects = db.Projects.Where(x => x.user_id == user_id).ToList();
                         return RedirectToAction("UserPage", "Home", new { item_id = user_id });
                     }
                     else
@@ -197,19 +197,20 @@ namespace Sigma.Controllers
                 return RedirectToAction("Sign_in","Home");
             }
         }
-        [HttpGet]
+
+
+
         public ActionResult DeleteProfile()
         {
-            var user_profile = db.Users.FirstOrDefault(x=>x.Id == user_id);
-            db.Users.Remove(user_profile);
-            var user_projects = db.Projects.Where(x => x.user_id == user_id);
-            foreach(var project in user_projects)
+            db.Entry(user_profile).State = EntityState.Deleted;
+            foreach (var project in user_projects)
             {
-                db.Projects.Remove(project);
+                db.Entry(project).State = EntityState.Deleted;
             }
+            db.Forms.Remove(db.Forms.FirstOrDefault(x => x.Id == user_id));
             db.SaveChanges();
             user_id = 0;
-            return RedirectToAction("index","Home",new {page = 1});
+            return RedirectToAction("index", "Home", new { page = 1 });
         }
     }
 }

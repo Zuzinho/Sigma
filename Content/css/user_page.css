@@ -110,7 +110,7 @@ body{
 	box-shadow: 8px 8px 0px #000000;
 	border-radius: 4px;
 }
-.actions_content button {
+.actions_content div {
 	background-color:#ffffff;
 	display: inline-block;
 	width: 138px;
@@ -125,7 +125,7 @@ body{
 .delete {
 	color: #E92323;
 }
-.actions_content button:hover {
+.actions_content div:hover {
 	background-color: #ddd;
 }
 .add_project {

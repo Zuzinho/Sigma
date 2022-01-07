@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,List<bool>>
+﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,bool>
 @{
     Layout = "//Views//MasterViewUserPage.cshtml";
 }
@@ -20,19 +20,19 @@
         </div>
         <div class="header__links">
             <a href="@Url.Action("MyPortfolio", "Home")" class="my_portfolio">My portfolio</a>
-            @if (Model.Item3[0])
+            @if (Model.Item3)
             {
             <div class="actions_dropdown">
                 <div class="actions">Actions</div>
                 <div class="actions_content">
-                    <form>
-                        <button class="edit">Edit my profile</button>
-                    </form>
-                    <form>
-                        <button class="add_project">Add project</button>
-                    </form>
+                    <a href="#">
+                        <div class="edit">Edit my profile</div>
+                    </a>
+                    <a href="#">
+                        <div class="add_project">Add project</div>
+                    </a>
                     <a href="@Url.Action("DeleteProfile" , "Home")">
-                        <button type="submit" class="delete">Delete profile</button>
+                        <div class="delete">Delete profile</div>
                     </a>
                 </div>
             </div>
