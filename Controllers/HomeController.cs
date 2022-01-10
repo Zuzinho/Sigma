@@ -128,9 +128,18 @@ namespace Sigma.Controllers
                     {
                         Email = email.Trim(),
                         Password = password.Trim(),
-                        Id = db.Forms.Count() + 1
+                        Id = db.Forms.Last().Id + 1
                     };
                     user_id = form.Id;
+                    User user1 = new User
+                    {
+                        Name = "Jane Keptton" + (user_id).ToString(),
+                        Description = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.",
+                        avatarUrl = "/Content/img/avatars/avatar1.jpg",
+                        position = "Senior web enginer",
+                        Id = user_id
+                    };
+                    db.Users.Add(user1);
                     db.Forms.Add(form);
                     db.SaveChanges();
                     return RedirectToAction("UserPage", "Home", new { item_id = user_id });
