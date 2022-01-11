@@ -37,9 +37,9 @@
     </Key>
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="128" />
-    <Property Name="Description" Type="nvarchar" MaxLength="1024" />
     <Property Name="avatarUrl" Type="nvarchar" MaxLength="1024" />
-    <Property Name="about" Type="nvarchar" MaxLength="1024" />
+    <Property Name="about_title" Type="nvarchar" MaxLength="1024" />
+    <Property Name="about_text" Type="nvarchar" MaxLength="1024" />
     <Property Name="position" Type="nvarchar" MaxLength="128" />
   </EntityType>
   <EntityContainer Name="Хранилище SigmaDBModelContainer">

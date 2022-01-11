@@ -29,12 +29,12 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="SigmaDBModel.User">
         <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="about_text" ColumnName="about_text" />
+          <ScalarProperty Name="about_title" ColumnName="about_title" />
           <ScalarProperty Name="position" ColumnName="position" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="avatarUrl" ColumnName="avatarUrl" />
-          <ScalarProperty Name="about" ColumnName="about" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

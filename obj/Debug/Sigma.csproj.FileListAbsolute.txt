@@ -198,3 +198,5 @@ C:\Users\user\Source\Repos\Sigma\bin\roslyn\vbc.exe.config
 C:\Users\user\Source\Repos\Sigma\bin\roslyn\vbc.rsp
 C:\Users\user\Source\Repos\Sigma\bin\roslyn\VBCSCompiler.exe
 C:\Users\user\Source\Repos\Sigma\bin\roslyn\VBCSCompiler.exe.config
+C:\Users\user\Source\Repos\Sigma\bin\MarkdownSharp.dll
+C:\Users\user\Source\Repos\Sigma\bin\MarkdownSharp.xml

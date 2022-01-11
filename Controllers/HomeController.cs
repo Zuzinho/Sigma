@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Sigma.Models;
-using System.Threading.Tasks;
+using MarkdownSharp;
 using System.Data.Entity;
 
 namespace Sigma.Controllers
@@ -12,6 +12,7 @@ namespace Sigma.Controllers
     public class HomeController : Controller
     {
         private static int user_id = 0;
+        public Markdown markdown = new Markdown();
         public int pageSize = 12;
         private static User user_profile = new User();
         private static List<Project> user_projects = new List<Project>();
@@ -100,8 +101,13 @@ namespace Sigma.Controllers
                 return Content("<h1>Страница не найдена</h1>");
             }
             bool is_owner;
+            var markdown_title = markdown.Transform(user.about_title);
+            var markdown_text = markdown.Transform(user.about_text);
+            List<string> markdown_list = new List<string>();
+            markdown_list.Add(markdown_title);
+            markdown_list.Add(markdown_text);
             is_owner = (item_id==user_id);
-            var view = (projects, user, is_owner);
+            var view = (projects, user, is_owner, markdown_list);
             return View(view);
         }
         public ActionResult AboutPage()
@@ -127,19 +133,26 @@ namespace Sigma.Controllers
                     Form form = new Form
                     {
                         Email = email.Trim(),
-                        Password = password.Trim(),
-                        Id = db.Forms.Last().Id + 1
+                        Password = password.Trim()
                     };
-                    user_id = form.Id;
-                    User user1 = new User
+                    if (db.Forms.Count() > 0)
                     {
-                        Name = "Jane Keptton" + (user_id).ToString(),
-                        Description = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.",
-                        avatarUrl = "/Content/img/avatars/avatar1.jpg",
-                        position = "Senior web enginer",
-                        Id = user_id
-                    };
-                    db.Users.Add(user1);
+                        form.Id = db.Forms.Last().Id + 1; 
+                    }
+                    else
+                    {
+                        form.Id = 1;
+                    }
+                    user_id = form.Id;
+                    //User user1 = new User
+                    //{
+                    //    Name = "Jane Keptton",
+                    //    Description = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.",
+                    //    avatarUrl = "/Content/img/avatars/avatar0.jpg",
+                    //    position = "Senior web enginer",
+                    //    Id = user_id
+                    //};
+                    //db.Users.Add(user1);
                     db.Forms.Add(form);
                     db.SaveChanges();
                     return RedirectToAction("UserPage", "Home", new { item_id = user_id });
@@ -221,5 +234,48 @@ namespace Sigma.Controllers
             user_id = 0;
             return RedirectToAction("index", "Home", new { page = 1 });
         }
+
+        [HttpGet]
+        public ActionResult EditUserPage()
+        {
+            var markdown_title = markdown.Transform(user_profile.about_title);
+            var markdown_text = markdown.Transform(user_profile.about_text);
+            List<string> markdown_list = new List<string>();
+            markdown_list.Add(markdown_title);
+            markdown_list.Add(markdown_text);
+            var view = (user_projects, user_profile,markdown_list);
+            return View(view);
+        }
+
+        [HttpPost]
+        public ActionResult EditUserPage(string UserAvatarUrl,string UserName, string User_position ,string UserAboutTitle, string UserAboutText)
+        {
+            var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
+            if (string.IsNullOrEmpty(UserAvatarUrl))
+            {
+                if (user_info.avatarUrl == null)
+                {
+                    user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
+                }
+            }
+            else
+            {
+                user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
+            }
+            user_info.Name = UserName;
+            user_info.position = User_position;
+            user_info.about_title = UserAboutTitle;
+            user_info.about_text = UserAboutText;
+            var user_projects_info = db.Projects.Where(x=>x.user_id == user_id).ToList();
+            foreach(var project in user_projects_info)
+            {
+                project.user_name = UserName;
+            }
+            user_profile = user_info;
+            user_projects = user_projects_info;
+            db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { item_id = user_id });
+        }
+
     }
 }

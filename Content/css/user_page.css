@@ -27,9 +27,9 @@ button{cursor: pointer;}
 button::-moz-focus-inner{padding: 0;border: 0;}
 a,a:visited{text-decoration: none;}
 a:hover{text-decoration: none;}
-ul li{list-style: none;}
+/*ul li{list-style: none;}*/
 img{vertical-align: top;}
-h1,h2,h3,h4,h5,h6{font-size: inherit;font-weight: 400;}
+/*h1,h2,h3,h4,h5,h6{font-size: inherit;font-weight: 400;}*/
 /*browser-sync start --server --files "*.css, *.html"*/
 
 body{
@@ -187,14 +187,9 @@ body{
 	margin: 0 12px 0 0;
 	border: 1px solid #C4C4C4;
 }
-.user_link_border:last-child{
-	display: inline-block;
-	width: 64px;
-	height: 64px;
-	border-radius: 50% 50%;
-	margin: 0;
-	border: 1px solid #C4C4C4;
-}
+	.user_link_border:last-child {
+		margin: 0 0 0 0;
+	}
 .user_link_image {
 	width: 32px;
 	height: 32px;
@@ -208,10 +203,8 @@ body{
 	margin: 0 auto;
 }
 .markdown__title {
-	font-weight: bold;
-	font-size: 24px;
 	line-height: 150%;
-	margin: 0 0 16px 0;
+	margin: 0 0 20px 0;
 }
 .markdown__text {
 	font-size: 16px;

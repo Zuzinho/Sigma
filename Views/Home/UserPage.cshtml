@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,bool>
+﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,bool, List<string>>
 @{
     Layout = "//Views//MasterViewUserPage.cshtml";
 }
@@ -25,7 +25,7 @@
             <div class="actions_dropdown">
                 <div class="actions">Actions</div>
                 <div class="actions_content">
-                    <a href="#">
+                    <a href="@Url.Action("EditUserPage","Home")">
                         <div class="edit">Edit my profile</div>
                     </a>
                     <a href="#">
@@ -78,8 +78,8 @@
 </div>
 <div class="container">
     <div class="markdown__row">
-        <div class="markdown__title">Markdown text title</div>
-        <div class="markdown__text">Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, </div>
+        <div class="markdown__title">@Html.Raw(Model.Item4[0])</div>
+        <div class="markdown__text">@Html.Raw(Model.Item4[1])</div>
     </div>
 </div>
 <div class="container">
@@ -92,7 +92,7 @@
             }
             var project = Model.Item1[i];
             <div class="project__item">
-                <div class="item__image"></div>
+                <img src="@project.PhotoUrl"alt="" class="item__image" />
                 <div class="item__name">@project.Title</div>
                 <div class="item__techs">
                     <div class="item__tech">@project.technology</div>

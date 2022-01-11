@@ -52,6 +52,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownSharp, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\MarkdownSharp.2.0.5\lib\net40\MarkdownSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -181,11 +184,13 @@
       <DependentUpon>SigmaDB.mdf</DependentUpon>
     </Content>
     <Content Include="Content\css\about.css" />
+    <Content Include="Content\css\edit_user_page.css" />
     <Content Include="Content\css\sign_in.css" />
     <Content Include="Content\css\sign_up.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\css\user_page.css" />
     <Content Include="Content\html\about.html" />
+    <Content Include="Content\html\edit_user_page.html" />
     <Content Include="Content\html\index.html" />
     <Content Include="Content\html\sign_in.html" />
     <Content Include="Content\html\sign_up.html" />
@@ -193,7 +198,17 @@
     <Content Include="Content\img\about1.jpg" />
     <Content Include="Content\img\about2.jpg" />
     <Content Include="Content\img\about3.jpg" />
+    <Content Include="Content\img\avatars\avatar1.jpg" />
+    <Content Include="Content\img\icons\arrow-left.png" />
+    <Content Include="Content\img\icons\arrow-right.png" />
     <Content Include="Content\img\icons\magnifying-glass.png" />
+    <Content Include="Content\img\links_icons\FacebookLogo.png" />
+    <Content Include="Content\img\links_icons\GithubLogo.png" />
+    <Content Include="Content\img\links_icons\LinkedinLogo.png" />
+    <Content Include="Content\img\links_icons\MediumLogo.png" />
+    <Content Include="Content\img\links_icons\Plus.png" />
+    <Content Include="Content\img\links_icons\Trash.png" />
+    <Content Include="Content\img\searcherror.jpg" />
     <Content Include="Content\img\title.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -247,6 +262,7 @@
     <Content Include="Views\Home\Sign_up.cshtml" />
     <Content Include="Views\Home\Sign_in.cshtml" />
     <Content Include="Views\MasterViewIndex.cshtml" />
+    <Content Include="Views\Home\EditUserPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

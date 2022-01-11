@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Content",
+    "\\Content\\css",
+    "\\Views",
+    "\\Views\\Home"
   ],
-  "SelectedNode": "\\Sigma.sln",
+  "SelectedNode": "\\Content\\css\\edit_user_page.css",
   "PreviewInSolutionExplorer": false
 }

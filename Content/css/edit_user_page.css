@@ -27,9 +27,9 @@ button{cursor: pointer;}
 button::-moz-focus-inner{padding: 0;border: 0;}
 a,a:visited{text-decoration: none;}
 a:hover{text-decoration: none;}
-ul li{list-style: none;}
+/*ul li{list-style: none;}*/
 img{vertical-align: top;}
-h1,h2,h3,h4,h5,h6{font-size: inherit;font-weight: 400;}
+/*h1,h2,h3,h4,h5,h6{font-size: inherit;font-weight: 400;}*/
 /*browser-sync start --server --files "*.css, *.html"*/
 
 body{
@@ -103,25 +103,24 @@ body{
 .user_title {
 	display: flex;
 }
-.input_image__row{
-	display: flex;
-	flex-direction: column;
-}
 .user_image {
 	display: inline-block;
 	width: 150px;
 	height: 150px;
 	border-radius: 50% 50%;
 	overflow: hidden;
+	position: relative;
+}
+.image_input{
+	display:block;
+	position:absolute;
+	width: 150px;
+	height:180px;
+	top:-30px;
 }
 .image {
 	width: 150px;
 	height: 150px;
-}
-.image_input{
-	width: 120px;
-	margin: 0 auto;
-	margin-top: 5px;
 }
 .user_info {
 	margin: 0 0 0 24px;
@@ -153,7 +152,7 @@ body{
 	border: 1px solid #C4C4C4;
 	position: relative;
 }
-.user_link_border::last-child{
+.user_link_border:last-child{
 	display: inline-block;
 	width: 64px;
 	height: 64px;
@@ -245,14 +244,14 @@ body{
 	margin: 0 auto;
 }
 .markdown__title {
-	font-weight: bold;
-	font-size: 24px;
+	font-size: 16px;
 	line-height: 150%;
-	margin: 0 0 16px 0;
+	margin: 0 0 20px 0;
 }
 .markdown__text {
 	font-size: 16px;
 	line-height: 150%;
+	height:250px;
 	color: rgba(0, 0, 0, 0.8);
 }
 
