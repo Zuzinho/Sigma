@@ -1,7 +1,9 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,bool, List<string>>
+﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User, bool, List<Sigma.Models.Link>>
+@using MarkdownSharp;
+@using Sigma.Controllers;
 @{
     Layout = "//Views//MasterViewUserPage.cshtml";
-}
+} 
 
 <div class="header">
     <div class="header__row">
@@ -19,23 +21,30 @@
             </a>
         </div>
         <div class="header__links">
-            <a href="@Url.Action("MyPortfolio", "Home")" class="my_portfolio">My portfolio</a>
             @if (Model.Item3)
             {
-            <div class="actions_dropdown">
-                <div class="actions">Actions</div>
-                <div class="actions_content">
-                    <a href="@Url.Action("EditUserPage","Home")">
-                        <div class="edit">Edit my profile</div>
-                    </a>
-                    <a href="#">
-                        <div class="add_project">Add project</div>
-                    </a>
-                    <a href="@Url.Action("DeleteProfile" , "Home")">
-                        <div class="delete">Delete profile</div>
-                    </a>
+                <a href="@Url.Action("MyPortfolio", "Home")" class="own_portfolio">My portfolio</a>
+            }
+            else
+            {
+                <a href="@Url.Action("MyPortfolio", "Home")" class="my_portfolio">My portfolio</a>
+            }
+            @if (Model.Item3)
+            {
+                <div class="actions_dropdown">
+                    <div class="actions">Actions</div>
+                    <div class="actions_content">
+                        <a href="@Url.Action("EditUserPage","Home")">
+                            <div class="edit">Edit my profile</div>
+                        </a>
+                        <a href="@Url.Action("AddProject","Home")">
+                            <div class="add_project">Add project</div>
+                        </a>
+                        <a href="@Url.Action("DeleteProfile" , "Home")">
+                            <div class="delete">Delete profile</div>
+                        </a>
+                    </div>
                 </div>
-            </div>
             }
             <a href="@Url.Action("AboutPage","Home")" class="about">About</a>
         </div>
@@ -53,62 +62,69 @@
             </div>
         </div>
         <div class="user_links">
-            <a href="#" target="_blanc">
-                <div class="user_link_border">
-                    <image class="user_link_image" src="img/links_icons/LinkedinLogo.png" alt=""></image>
-                </div>
-            </a>
-            <a href="#" target="_blanc">
-                <div class="user_link_border">
-                    <image class="user_link_image" src="img/links_icons/MediumLogo.png" alt=""></image>
-                </div>
-            </a>
-            <a href="#" target="_blanc">
-                <div class="user_link_border">
-                    <image class="user_link_image" src="img/links_icons/GithubLogo.png" alt=""></image>
-                </div>
-            </a>
-            <a href="#" target="_blanc">
-                <div class="user_link_border">
-                    <image class="user_link_image" src="img/links_icons/FacebookLogo.png" alt=""></image>
-                </div>
-            </a>
+            @foreach (var link in Model.Item4)
+                {
+                <a href="@link.Link1" target="_blanc">
+                    <div class="user_link_border">
+                        <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
+                    </div>
+                </a>
+                }
         </div>
     </div>
 </div>
 <div class="container">
     <div class="markdown__row">
-        <div class="markdown__title">@Html.Raw(Model.Item4[0])</div>
-        <div class="markdown__text">@Html.Raw(Model.Item4[1])</div>
+        @if (true)
+        {
+            Markdown markdown = new Markdown();
+            string markdown_text = markdown.Transform(Model.Item2.about);
+            <div class="markdown__text">@Html.Raw(markdown_text)</div>
+        }
     </div>
 </div>
 <div class="container">
     <div class="projects__row">
-        @for (int i = 0; i < Model.Item1.Count; i++)
+        @if (true)
         {
-            if (i > 5)
+            var sort_model = Sigma.Sorting.Selected_sort(Model.Item1);
+            for (int i = 0; i < sort_model.Count; i++)
             {
-                break;
-            }
-            var project = Model.Item1[i];
-            <div class="project__item">
-                <img src="@project.PhotoUrl"alt="" class="item__image" />
-                <div class="item__name">@project.Title</div>
-                <div class="item__techs">
-                    <div class="item__tech">@project.technology</div>
+                var project = sort_model[i];
+                if (i < 6)
+                {
+                    <div class="project__item-active">
+                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                        <div class="item__name">@project.Title</div>
+                        <div class="item__techs">
+                            <div class="item__tech">@project.technology</div>
+                        </div>
+                        <div class="item__distr">@project.Description</div>
+                    </div>
+                }
+                else 
+                {
+                <div class="project__item-not_active">
+                    <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                    <div class="item__name">@project.Title</div>
+                    <div class="item__techs">
+                        <div class="item__tech">@project.technology</div>
+                    </div>
+                    <div class="item__distr">@project.Description</div>
                 </div>
-                <div class="item__distr">@project.Description</div>
-            </div>
+                }
+            }
         }
     </div>
 </div>
 @if (Model.Item1.Count > 6)
 {
-    <a href="#">
+    <div class="all_projects_block" onclick="ShowProjects()">
         <div class="container">
             <div class="all_projects">
                 See all
             </div>
         </div>
-    </a>
+    </div>
 }
+<script src="~/Content/js/ShowProjects.js"></script>

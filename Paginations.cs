@@ -4,7 +4,7 @@ namespace Sigma.Models
 {
     public class Paginations
     {
-        public static List<int> show_pagination(int pages_count, int current_page)
+        private static List<int> show_pagination(int pages_count, int current_page)
         {
             List<int> pagination = new List<int>();
             bool arrow_left_active = current_page > 1;

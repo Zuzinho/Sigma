@@ -86,6 +86,7 @@ body{
 	margin: 0 24px 0 0;
 	font-size: 16px;
 	color: #000000;
+	text-decoration:underline;
 }
 
 .about {
@@ -179,6 +180,9 @@ body{
 .trash_link{
 	margin: 8px;
 }
+.trash_border:hover {
+	background: #ddd;
+}
 .add_new_link__row{
 	width: 140px;
 	height: 40px;
@@ -192,6 +196,7 @@ body{
 	line-height: 19px;
 	color: #777777;
 	margin: 11px 12px;
+	max-width:68px;
 }
 .add_new_link_image{
 	width: 24px;
@@ -217,43 +222,55 @@ body{
 	margin-top: 24px;
 	display: flex;
 }
-.row__editor{
-	width: 73px;
-	height: 40px;
-}
-.row__preview{
+.editor-tabs__item {
+	display: inline-block;
 	width: 87px;
+	color:#000000;
 	height: 40px;
 }
-.row__type div{
-	font-weight: bold;
+.editor-content__item {
+	display: none;
+	width: 512px;
+	margin: 0 auto;
+	padding: 12px 20px;
+	border: 1px solid gray;
 	font-size: 16px;
 	line-height: 150%;
-	padding: 8px 12px;
+	height: 250px;
+	color: rgba(0, 0, 0, 0.8);
 }
+	.editor-content__item:target {
+		display: block;
+	}
+		.row__type a {
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 150%;
+			padding: 8px 12px;
+		}
 .row__editor_active {
 	background: #f2f2f2;
 }
 .row__preview_active{
 	background: #f2f2f2;
 }
-.markdown__row {
-	display: flex;
-	flex-direction: column;
-	width: 512px;
+
+.markdown__text_input {
+	display: none;
+	border: 1px solid gray;
+	width: 544px;
 	margin: 0 auto;
-}
-.markdown__title {
+	padding: 12px 16px;
 	font-size: 16px;
 	line-height: 150%;
-	margin: 0 0 20px 0;
-}
-.markdown__text {
-	font-size: 16px;
-	line-height: 150%;
-	height:250px;
+	height: 250px;
 	color: rgba(0, 0, 0, 0.8);
+	overflow: auto;
 }
+
+	.markdown__text_input:target {
+		display: block;
+	}
 
 .search__project_text{
 	width: 354px;
@@ -273,9 +290,23 @@ body{
 	border-radius: 4px;
 	padding: 8px 12px;
 }
-.project_selection__text{
+
+.project_selection__text {
 	color: #777777;
 	line-height: 19px;
+}
+.see_all {
+	display:none;
+	width:250px;
+	height:20px;
+	margin:0 auto;
+	margin-top:5px;
+	color:purple;
+}
+
+.project__search:hover~.see_all {
+	display: block;
+
 }
 .projects__row {
 	display: flex;
@@ -290,11 +321,17 @@ body{
 	height: 204px;
 	margin: 0 0 24px 0;
 }
-.item__image {
-	width: 325px;
-	height: 166px;
-	background-color: #C4C4C4;
+.project__item-active {
+	background-color: #6625D4;
+	margin-top: -4px;
+	margin-left: -4px;
+	box-shadow: #000 8px 8px;
 }
+	.item__image {
+		width: 325px;
+		height: 166px;
+		background-size: cover;
+	}
 .item__name {
 	margin: 12px 0 0 0;
 	font-weight: bold;

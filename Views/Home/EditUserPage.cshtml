@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User, List<string>>
+﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,List<Sigma.Models.Link>>
 @{
     Layout = "";
 }
@@ -50,41 +50,19 @@
                     </div>
                 </div>
                 <div class="user_links">
-                    <div>
-                        <div class="user_link_border">
-                            <image class="user_link_image" src="img/links_icons/LinkedinLogo.png" alt=""></image>
-                            <div class="trash_border">
-                                <image class="trash_link" src="img/links_icons/Trash.png"></image>
+                    @foreach (var link in Model.Item3)
+                    {
+                        string link_id = link.Id.ToString();
+                        <div id="@link_id" class="user_link_border">
+                            <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
+                            <div class="trash_border" onclick="deleteicon(@link_id)">
+                                <image class="trash_link" src="/Content/img/icons/Trash.png"></image>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="user_link_border">
-                            <image class="user_link_image" src="img/links_icons/MediumLogo.png" alt=""></image>
-                            <div class="trash_border">
-                                <image class="trash_link" src="img/links_icons/Trash.png"></image>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="user_link_border">
-                            <image class="user_link_image" src="img/links_icons/GithubLogo.png" alt=""></image>
-                            <div class="trash_border">
-                                <image class="trash_link" src="img/links_icons/Trash.png"></image>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="user_link_border">
-                            <image class="user_link_image" src="img/links_icons/FacebookLogo.png" alt=""></image>
-                            <div class="trash_border">
-                                <image class="trash_link" src="img/links_icons/Trash.png"></image>
-                            </div>
-                        </div>
-                    </div>
+                    }
                     <div class="add_new_link__row">
-                        <div class="add_new_link_text">Add new...</div>
-                        <image class="add_new_link_image" src="img/links_icons/Plus.png"></image>
+                        <input type="text" name="UserUrl" class="add_new_link_text" placeholder="Add new...">
+                        <image class="add_new_link_image" src="/Content/img/icons/Plus.png"></image>
                     </div>
                 </div>
             </div>
@@ -93,34 +71,46 @@
             <div class="owner_info__row">
                 <div class="row__title">Tell a bit about yourself</div>
                 <div class="row__type">
-                    <div class="row__editor">Editor</div>
-                    <div class="row__preview">Preview</div>
+                    <a href="#editorForm" class="editor-tabs__item">Editor</a>
+                    <a href="#editorPreview" class="editor-tabs__item">Preview</a>
                 </div>
-                <div class="markdown__row">
-                    <input type="text" class="markdown__title" name="UserAboutTitle" value="@Model.Item2.about_title"/>
-                    <textarea class="markdown__text" name="UserAboutText">@Model.Item2.about_text</textarea>
-                </div>
+                <textarea id="editorForm" placeholder="Write here your markdown"
+                          class="markdown__text_input" name="UserAbout">@Model.Item2.about</textarea>
+                <div id="editorPreview" class="editor-content__item"></div>
             </div>
         </div>
         <div class="container">
             <div class="search__project_text">Select your brightest projects</div>
-                <div class="project__search">
-                    <input class="project_selection__text" value="@ViewData["project_order"]" placeholder="Search for a project">
-                    <image class="magglass" src="img/icons/magnifying-glass.png"></image>
-                </div>
+            <div class="project__search">
+                <input formmethod="get" id="ProjectSearch" class="project_selection__text" name="project_order" placeholder="Search for a project">
+                <image class="magglass" src="/Content/img/icons/magnifying-glass.png"onclick="sendProjects()"></image>
+            </div>
+            <div class="see_all">Enter 'all projects' to see all projects</div>
+
             <div class="projects__row">
                 @foreach (var project in Model.Item1)
                 {
-                <div class="project__item">
-                    <img class="item__image" src="@project.PhotoUrl" alt="">
+                    string project_id = "project" + project.Id.ToString();
+                    if (Convert.ToBoolean(project.selected))
+                    {
+                <div id="@project_id" class="project__item project__item-active" onclick="ChangeActive(@project_id)">
+                    <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                     <div class="item__name">@project.Title</div>
                 </div>
+                    }
+                    else
+                    {
+                    <div id="@project_id" class="project__item" onclick="ChangeActive(@project_id)">
+                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                        <div class="item__name">@project.Title</div>
+                    </div>
+                    }
                 }
             </div>
         </div>
         <div class="container">
             <div class="all_projects">
-                <button type="submit">
+                <button type="submit" onclick="sendProjects()">
                     Save changes
                 </button>
             </div>
@@ -129,5 +119,11 @@
     <div class="footer">
         Sigma 2021
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="~/Content/js/markdown.js"></script>
+    <script src="~/Content/js/deleteicon.js"></script>
+    <script src="~/Content/js/ChangeActive.js"></script>
+    <script src="~/Content/js/sendProjects.js"></script>
 </body>
 </html>

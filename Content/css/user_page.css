@@ -86,6 +86,12 @@ body{
 	font-size: 16px;
 	color: #000000;
 }
+.own_portfolio {
+	margin: 0 24px 0 0;
+	font-size: 16px;
+	color: #000000;
+	text-decoration:underline;
+}
 .actions_dropdown {
 	position: relative;
 	display: inline-block;
@@ -121,6 +127,12 @@ body{
 	align-items: center;
 	padding: 10px 0;
 	text-align:center;
+}
+.edit {
+	color: #6625D4;
+}
+.add_project {
+	color: #6625D4;
 }
 .delete {
 	color: #E92323;
@@ -179,7 +191,7 @@ body{
 	display: flex;
 	margin: 40px 0;
 }
-.user_link_border {
+.user_links a{
 	display: inline-block;
 	width: 64px;
 	height: 64px;
@@ -187,26 +199,25 @@ body{
 	margin: 0 12px 0 0;
 	border: 1px solid #C4C4C4;
 }
-	.user_link_border:last-child {
-		margin: 0 0 0 0;
+	.user_links a:hover {
+		background: #ddd;
 	}
-.user_link_image {
-	width: 32px;
-	height: 32px;
-	margin: 15px;
-}
+	.user_link_image {
+		width: 32px;
+		height: 32px;
+		margin: 15px;
+	}
 
 .markdown__row {
 	display: flex;
 	flex-direction: column;
 	width: 512px;
 	margin: 0 auto;
-}
-.markdown__title {
-	line-height: 150%;
-	margin: 0 0 20px 0;
+	min-height:250px;
+	border:1px solid #000;
 }
 .markdown__text {
+	padding:20px;
 	font-size: 16px;
 	line-height: 150%;
 	color: rgba(0, 0, 0, 0.8);
@@ -218,17 +229,21 @@ body{
 	flex-wrap: wrap;
 	justify-content: space-between;
 }
-.project__item {
+.project__item-not_active {
+	display: none;
+}
+.project__item-active {
 	display: flex;
 	flex-direction: column;
 	width: 450px;
 	height: 396px;
-	margin: 0 0 24px 0;
+	margin: 0 0 50px 0;
 }
+
 .item__image {
 	width: 450px;
 	height: 256px;
-	background-color: #C4C4C4;
+	background-size: cover;
 }
 .item__name {
 	margin: 12px 0 0 0;
@@ -273,7 +288,15 @@ body{
 	line-height: 22px;
 	margin-right: 0;
 	margin-left: auto;
+	box-shadow: 0px 4px #000;
 }
+	.all_projects:hover {
+		background: #ddd;
+	}
+
+	.all_projects:active{
+		box-shadow:0 0 0;
+	}
 
 .footer {
     background: #F2F2F2;

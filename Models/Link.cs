@@ -18,5 +18,6 @@ namespace Sigma.Models
         public string Provider { get; set; }
         public string Link1 { get; set; }
         public Nullable<int> user_id { get; set; }
+        public string provider_avatar { get; set; }
     }
 }

@@ -18,7 +18,6 @@ namespace Sigma.Models
         public string Name { get; set; }
         public string avatarUrl { get; set; }
         public string position { get; set; }
-        public string about_title { get; set; }
-        public string about_text { get; set; }
+        public string about { get; set; }
     }
 }

@@ -4,6 +4,7 @@
     <EntitySetMapping Name="Links">
       <EntityTypeMapping TypeName="SigmaDBModel.Link">
         <MappingFragment StoreEntitySet="Links">
+          <ScalarProperty Name="provider_avatar" ColumnName="provider_avatar" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Provider" ColumnName="Provider" />
           <ScalarProperty Name="Link1" ColumnName="Link" />
@@ -14,6 +15,7 @@
     <EntitySetMapping Name="Projects">
       <EntityTypeMapping TypeName="SigmaDBModel.Project">
         <MappingFragment StoreEntitySet="Projects">
+          <ScalarProperty Name="selected" ColumnName="selected" />
           <ScalarProperty Name="user_name" ColumnName="user_name" />
           <ScalarProperty Name="technology" ColumnName="technology" />
           <ScalarProperty Name="Id" ColumnName="Id" />
@@ -29,8 +31,7 @@
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="SigmaDBModel.User">
         <MappingFragment StoreEntitySet="Users">
-          <ScalarProperty Name="about_text" ColumnName="about_text" />
-          <ScalarProperty Name="about_title" ColumnName="about_title" />
+          <ScalarProperty Name="about" ColumnName="about" />
           <ScalarProperty Name="position" ColumnName="position" />
           <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Name" ColumnName="Name" />

@@ -1,4 +1,5 @@
 ﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>,  List<int>>
+    @using Sigma;
 @{
     Layout = "//Views//MasterViewIndex.cshtml";
 }
@@ -9,6 +10,8 @@
         <div class="portfolios__row">
                 @foreach(var user in Model.Item2) {
                     int count = 0;
+                    var user_projects = Model.Item1.Where(x => x.user_id == user.Id).ToList();
+                    var sorted_user_user_projects = Sorting.Selected_sort(user_projects);
 
                     <a class="user_page" href="@Url.Action("UserPage", "Home", new { item_id = user.Id })">
                         <div class="portfolios__item item">
@@ -20,21 +23,19 @@
                                         <p class="title_main_skill">@user.position</p>
                                     </div>
                                     <div class="item__skills">
-                                        @foreach (var project in Model.Item1)
+                                        
+                                        
+                                        @foreach (var project in sorted_user_user_projects)
                                         {
-                                            if (project.user_id == user.Id)
-                                            {
                                                 <div class="item__skill skill">
                                                     <div class="skill__info">@project.Title</div>
                                                     <div class="skill__name"><p>@project.technology</p></div>
                                                 </div>
-                                                count++;
-                                                if (count == 3)
-                                                {
-                                                    break;
-                                                }
+                                            count++;
+                                            if (count == 3)
+                                            {
+                                                break;
                                             }
-
                                         }
                                     </div>
                                 </div>

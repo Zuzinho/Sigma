@@ -23,5 +23,7 @@ namespace Sigma.Models
         public Nullable<int> user_id { get; set; }
         public string technology { get; set; }
         public string user_name { get; set; }
+        public Nullable<bool> selected { get; set; }
+
     }
 }

@@ -16,6 +16,7 @@
     <Property Name="Provider" Type="nvarchar" MaxLength="350" />
     <Property Name="Link" Type="nvarchar(max)" />
     <Property Name="user_id" Type="int" />
+    <Property Name="provider_avatar" Type="nvarchar" MaxLength="300" />
   </EntityType>
   <EntityType Name="Projects">
     <Key>
@@ -30,6 +31,7 @@
     <Property Name="About" Type="nvarchar(max)" />
     <Property Name="user_id" Type="int" />
     <Property Name="user_name" Type="nvarchar" MaxLength="128" />
+    <Property Name="selected" Type="bit" />
   </EntityType>
   <EntityType Name="Users">
     <Key>
@@ -38,9 +40,8 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Name" Type="nvarchar" MaxLength="128" />
     <Property Name="avatarUrl" Type="nvarchar" MaxLength="1024" />
-    <Property Name="about_title" Type="nvarchar" MaxLength="1024" />
-    <Property Name="about_text" Type="nvarchar" MaxLength="1024" />
     <Property Name="position" Type="nvarchar" MaxLength="128" />
+    <Property Name="about" Type="nvarchar" MaxLength="1024" />
   </EntityType>
   <EntityContainer Name="Хранилище SigmaDBModelContainer">
     <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />

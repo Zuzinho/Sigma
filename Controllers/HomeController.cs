@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Sigma.Models;
-using MarkdownSharp;
 using System.Data.Entity;
 
 namespace Sigma.Controllers
 {
     public class HomeController : Controller
     {
-        private static int user_id = 0;
-        public Markdown markdown = new Markdown();
-        public int pageSize = 12;
+        public static int user_id = 0;
+        private int pageSize = 12;
         private static User user_profile = new User();
+        private static List<Project> selected_projects = new List<Project>();
         private static List<Project> user_projects = new List<Project>();
-        private Models.Database1Entities db = new Models.Database1Entities();
+        private static Models.Database1Entities db = new Models.Database1Entities();
+        private static List<Link> user_links = new List<Link>();
         public ActionResult Index(string order,int page = 1)
         {
             ViewData["order"] = order;
@@ -94,21 +93,25 @@ namespace Sigma.Controllers
         }
         public ActionResult UserPage(int item_id = -1)
         {
-            var user = db.Users.FirstOrDefault(x => x.Id == item_id);
-            var projects = db.Projects.Where(x=>x.user_id == item_id).ToList();
-            if (user == null)
-            {
-                return Content("<h1>Страница не найдена</h1>");
-            }
             bool is_owner;
-            var markdown_title = markdown.Transform(user.about_title);
-            var markdown_text = markdown.Transform(user.about_text);
-            List<string> markdown_list = new List<string>();
-            markdown_list.Add(markdown_title);
-            markdown_list.Add(markdown_text);
-            is_owner = (item_id==user_id);
-            var view = (projects, user, is_owner, markdown_list);
-            return View(view);
+            is_owner = (item_id == user_id);
+            if (is_owner)
+            {
+                var view = (user_projects, user_profile, is_owner,user_links);
+                return View(view);
+            }
+            else
+            {
+                var user = db.Users.FirstOrDefault(x => x.Id == item_id);
+                var projects = db.Projects.Where(x => x.user_id == item_id).ToList();
+                var links = db.Links.Where(x => x.user_id == item_id).ToList();
+                if (user == null)
+                {
+                    return Content("<h1>Страница не найдена</h1>");
+                }
+                var view = (projects, user, is_owner,links);
+                return View(view);
+            }
         }
         public ActionResult AboutPage()
         {
@@ -137,7 +140,7 @@ namespace Sigma.Controllers
                     };
                     if (db.Forms.Count() > 0)
                     {
-                        form.Id = db.Forms.Last().Id + 1; 
+                        form.Id = db.Forms.AsEnumerable().Last().Id + 1; 
                     }
                     else
                     {
@@ -147,7 +150,6 @@ namespace Sigma.Controllers
                     //User user1 = new User
                     //{
                     //    Name = "Jane Keptton",
-                    //    Description = "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.",
                     //    avatarUrl = "/Content/img/avatars/avatar0.jpg",
                     //    position = "Senior web enginer",
                     //    Id = user_id
@@ -190,6 +192,7 @@ namespace Sigma.Controllers
                         user_id = user.Id;
                         user_profile = db.Users.FirstOrDefault(x => x.Id == user_id);
                         user_projects = db.Projects.Where(x => x.user_id == user_id).ToList();
+                        user_links = db.Links.Where(x => x.user_id == user_id).ToList();
                         return RedirectToAction("UserPage", "Home", new { item_id = user_id });
                     }
                     else
@@ -220,8 +223,6 @@ namespace Sigma.Controllers
             }
         }
 
-
-
         public ActionResult DeleteProfile()
         {
             db.Entry(user_profile).State = EntityState.Deleted;
@@ -238,44 +239,151 @@ namespace Sigma.Controllers
         [HttpGet]
         public ActionResult EditUserPage()
         {
-            var markdown_title = markdown.Transform(user_profile.about_title);
-            var markdown_text = markdown.Transform(user_profile.about_text);
-            List<string> markdown_list = new List<string>();
-            markdown_list.Add(markdown_title);
-            markdown_list.Add(markdown_text);
-            var view = (user_projects, user_profile,markdown_list);
+            var view = (user_projects, user_profile,user_links);
             return View(view);
         }
 
         [HttpPost]
-        public ActionResult EditUserPage(string UserAvatarUrl,string UserName, string User_position ,string UserAboutTitle, string UserAboutText)
+        public ActionResult EditUserPage(string UserAvatarUrl,string UserName, string User_position ,string UserAbout, string project_order,string UserUrl)
         {
-            var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
-            if (string.IsNullOrEmpty(UserAvatarUrl))
-            {
-                if (user_info.avatarUrl == null)
+            project_order = project_order.Trim().ToLower();
+            if (!string.IsNullOrEmpty(project_order))
+            {   
+                var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
+                if (string.IsNullOrEmpty(UserAvatarUrl))
                 {
-                    user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
+                    if (user_info.avatarUrl == null)
+                    {
+                        user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
+                    }
+                }
+                else
+                {
+                    user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
+                }
+                user_info.Name = UserName;
+                user_info.position = User_position;
+                user_info.about = UserAbout;
+                var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
+                foreach (var project in user_projects_info)
+                {
+                    project.user_name = UserName;
+                }
+                user_profile = user_info;
+                user_projects = user_projects_info;
+                if (project_order == "all projects")
+                {
+                    var view = (user_projects, user_profile,user_links);
+                    return View(view);
+                }
+                else
+                {
+                    var user_projects_order = user_projects.Where(x => x.Title.Trim().ToLower().Contains(project_order)).ToList();
+                    var view = (user_projects_order, user_profile,user_links);
+                    return View(view);
                 }
             }
             else
             {
-                user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
+                var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
+                if (string.IsNullOrEmpty(UserAvatarUrl))
+                {
+                    if (user_info.avatarUrl == null)
+                    {
+                        user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
+                    }
+                }
+                else
+                {
+                    user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
+                }
+                user_info.Name = UserName;
+                user_info.position = User_position;
+                user_info.about = UserAbout;
+                var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
+                foreach (var project in user_projects_info)
+                {
+                    project.user_name = UserName;
+                }
+                user_profile = user_info;
+                user_projects = user_projects_info;
+                if (!string.IsNullOrEmpty(UserUrl))
+                {
+                    Link link = Links.getLink(UserUrl);
+                    if (link != null && !Links.existProvider(UserUrl,user_links))
+                    {
+                        link.user_id = user_id;
+                        if (db.Links.Count() > 0)
+                        {
+                            link.Id = db.Links.AsEnumerable().Last().Id + 1;
+                        }
+                        else
+                        {
+                            link.Id = 1;
+                        }
+                        db.Links.Add(link);
+                        user_links.Add(link);
+                        db.SaveChanges();
+                    }
+                    var view = (user_projects, user_profile,user_links);
+                    return View(view);
+                }
+                else
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("UserPage", "Home", new { item_id = user_id });
+                }
             }
-            user_info.Name = UserName;
-            user_info.position = User_position;
-            user_info.about_title = UserAboutTitle;
-            user_info.about_text = UserAboutText;
-            var user_projects_info = db.Projects.Where(x=>x.user_id == user_id).ToList();
-            foreach(var project in user_projects_info)
+        }
+
+        public ActionResult AddProject()
+        {
+            Project project = new Project
             {
-                project.user_name = UserName;
-            }
-            user_profile = user_info;
-            user_projects = user_projects_info;
+                Title = "Stacko social net",
+                Id = db.Projects.AsEnumerable().Last().Id + 1,
+                technology = "ASP.NET",
+                user_id = user_profile.Id,
+                user_name = user_profile.Name,
+                PhotoUrl = "/Content/img/title.jpg",
+                selected = false
+            };
+            db.Projects.Add(project);
+            user_projects.Add(project);
             db.SaveChanges();
             return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
 
+        public void DeleteLink(int id=0)
+        {
+            var deleting_link = user_links.Find(x=>x.Id == id);
+            if (deleting_link != null)
+            {
+                db.Entry(deleting_link).State = EntityState.Deleted;
+                user_links.Remove(deleting_link);
+            }
+        }
+
+        public void GetProjects(string ids_array)
+        {
+            var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
+            var ids_array_ = ids_array.Split(',');
+            if (ids_array.Length > 0)
+            {
+                for (int i = 0; i < ids_array_.Length; i++)
+                {
+                    ids_array_[i] = ids_array_[i].Substring(7);
+                }
+            }
+            foreach (var project in user_projects)
+            {
+                project.selected = ids_array_.Contains(project.Id.ToString());
+            }
+            foreach (var project in user_projects_info)
+            {
+                project.selected = ids_array_.Contains(project.Id.ToString());
+            }
+            db.SaveChanges();
+        }
     }
 }

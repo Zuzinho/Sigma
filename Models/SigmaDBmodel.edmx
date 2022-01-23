@@ -21,6 +21,7 @@
           <Property Name="Provider" Type="nvarchar" MaxLength="350" />
           <Property Name="Link" Type="nvarchar(max)" />
           <Property Name="user_id" Type="int" />
+          <Property Name="provider_avatar" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="Projects">
           <Key>
@@ -35,6 +36,7 @@
           <Property Name="About" Type="nvarchar(max)" />
           <Property Name="user_id" Type="int" />
           <Property Name="user_name" Type="nvarchar" MaxLength="128" />
+          <Property Name="selected" Type="bit" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -43,9 +45,8 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="128" />
           <Property Name="avatarUrl" Type="nvarchar" MaxLength="1024" />
-          <Property Name="about_title" Type="nvarchar" MaxLength="1024" />
-          <Property Name="about_text" Type="nvarchar" MaxLength="1024" />
           <Property Name="position" Type="nvarchar" MaxLength="128" />
+          <Property Name="about" Type="nvarchar" MaxLength="1024" />
         </EntityType>
         <EntityContainer Name="Хранилище SigmaDBModelContainer">
           <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
@@ -65,6 +66,7 @@
           <Property Name="Provider" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="Link1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="user_id" Type="Int32" />
+          <Property Name="provider_avatar" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Project">
           <Key>
@@ -79,6 +81,7 @@
           <Property Name="user_id" Type="Int32" />
           <Property Name="technology" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
           <Property Name="user_name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="selected" Type="Boolean" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -88,8 +91,7 @@
           <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="avatarUrl" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
           <Property Name="position" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="about_title" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
-          <Property Name="about_text" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+          <Property Name="about" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Links" EntityType="Self.Link" />
@@ -114,6 +116,7 @@
           <EntitySetMapping Name="Links">
             <EntityTypeMapping TypeName="SigmaDBModel.Link">
               <MappingFragment StoreEntitySet="Links">
+                <ScalarProperty Name="provider_avatar" ColumnName="provider_avatar" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Provider" ColumnName="Provider" />
                 <ScalarProperty Name="Link1" ColumnName="Link" />
@@ -124,6 +127,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="SigmaDBModel.Project">
               <MappingFragment StoreEntitySet="Projects">
+                <ScalarProperty Name="selected" ColumnName="selected" />
                 <ScalarProperty Name="user_name" ColumnName="user_name" />
                 <ScalarProperty Name="technology" ColumnName="technology" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -139,8 +143,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="SigmaDBModel.User">
               <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="about_text" ColumnName="about_text" />
-                <ScalarProperty Name="about_title" ColumnName="about_title" />
+                <ScalarProperty Name="about" ColumnName="about" />
                 <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -172,7 +175,7 @@
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
         <DesignerProperty Name="EnablePluralization" Value="true" />
-        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
         <DesignerProperty Name="UseLegacyProvider" Value="false" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
       </DesignerInfoPropertySet>
