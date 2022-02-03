@@ -4,7 +4,7 @@ function sendProjects() {
     projects_array.forEach(project => ids_array.push(String(project.id)));
     console.log(ids_array);
     jQuery.ajax({
-        method: "POST",
+        method: "GET",
         url: "/Home/GetProjects",
         data: "ids_array=" + ids_array
     });

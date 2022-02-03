@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web.Mvc;
 using Sigma.Models;
 using System.Data.Entity;
+using System.IO;
+using System.Web;
 
 namespace Sigma.Controllers
 {
@@ -12,11 +14,11 @@ namespace Sigma.Controllers
         public static int user_id = 0;
         private int pageSize = 12;
         private static User user_profile = new User();
-        private static List<Project> selected_projects = new List<Project>();
         private static List<Project> user_projects = new List<Project>();
-        private static Models.Database1Entities db = new Models.Database1Entities();
+        private static Database1Entities db = new Database1Entities();
         private static List<Link> user_links = new List<Link>();
-        public ActionResult Index(string order,int page = 1)
+        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma\\Content\\img\\avatars";
+        public ActionResult Index(string order, int page = 1)
         {
             ViewData["order"] = order;
             var ordquery = from x in db.Projects select x;
@@ -33,11 +35,11 @@ namespace Sigma.Controllers
                     var user = db.Users.FirstOrDefault(x => x.Id == item.user_id);
                     if (!users_list.Contains(user))
                     {
-                        users_list.Add(user);   
+                        users_list.Add(user);
                     }
                 }
                 var users = db.Users.Where(x => x.Name.Trim().ToLower().Contains(order));
-                foreach(var user in users)
+                foreach (var user in users)
                 {
                     if (!users_list.Contains(user))
                     {
@@ -45,7 +47,7 @@ namespace Sigma.Controllers
                     }
                 }
                 List<User> users_list_ = new List<User>();
-                for(int i = (page-1) * pageSize; i < (page) * pageSize; i++)
+                for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= users_list.Count)
                     {
@@ -62,7 +64,7 @@ namespace Sigma.Controllers
                 List<List<int>> pages_list = Paginations.paginations_list(count);
                 List<int> pages = pages_list[page - 1];
                 pages.Add(page);
-                var view = (projects_list, users_list_,pages);
+                var view = (projects_list, users_list_, pages);
                 return View(view);
             }
             else
@@ -70,7 +72,7 @@ namespace Sigma.Controllers
                 var projects = ordquery.ToList();
                 var user = db.Users.ToList();
                 List<User> users = new List<User>();
-                for (int i = (page-1) * pageSize; i < (page) * pageSize; i++)
+                for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= user.Count)
                     {
@@ -80,14 +82,14 @@ namespace Sigma.Controllers
                 }
                 int count = 0;
                 count = user.Count / pageSize;
-                if(user.Count% pageSize > 0)
+                if (user.Count % pageSize > 0)
                 {
                     count++;
                 }
                 List<List<int>> pages_list = Paginations.paginations_list(count);
                 List<int> pages = pages_list[page - 1];
                 pages.Add(page);
-                var view = (projects, users,pages);
+                var view = (projects, users, pages);
                 return View(view);
             }
         }
@@ -97,7 +99,7 @@ namespace Sigma.Controllers
             is_owner = (item_id == user_id);
             if (is_owner)
             {
-                var view = (user_projects, user_profile, is_owner,user_links);
+                var view = (user_projects, user_profile, is_owner, user_links);
                 return View(view);
             }
             else
@@ -109,7 +111,7 @@ namespace Sigma.Controllers
                 {
                     return Content("<h1>Страница не найдена</h1>");
                 }
-                var view = (projects, user, is_owner,links);
+                var view = (projects, user, is_owner, links);
                 return View(view);
             }
         }
@@ -140,21 +142,22 @@ namespace Sigma.Controllers
                     };
                     if (db.Forms.Count() > 0)
                     {
-                        form.Id = db.Forms.AsEnumerable().Last().Id + 1; 
+                        form.Id = db.Forms.AsEnumerable().Last().Id + 1;
                     }
                     else
                     {
                         form.Id = 1;
                     }
                     user_id = form.Id;
-                    //User user1 = new User
-                    //{
-                    //    Name = "Jane Keptton",
-                    //    avatarUrl = "/Content/img/avatars/avatar0.jpg",
-                    //    position = "Senior web enginer",
-                    //    Id = user_id
-                    //};
-                    //db.Users.Add(user1);
+                    User user1 = new User
+                    {
+                        Name = "Jane Keptton",
+                        avatarUrl = "/Content/img/avatars/avatar0.jpg",
+                        position = "Senior web enginer",
+                        Id = user_id
+                    };
+                    db.Users.Add(user1);
+                    user_profile = user1;
                     db.Forms.Add(form);
                     db.SaveChanges();
                     return RedirectToAction("UserPage", "Home", new { item_id = user_id });
@@ -178,7 +181,7 @@ namespace Sigma.Controllers
         }
 
         [HttpPost]
-        public ActionResult Sign_in(string email,string password)
+        public ActionResult Sign_in(string email, string password)
         {
             if (email.Trim().Length > 0 && password.Trim().Length > 0)
             {
@@ -219,7 +222,7 @@ namespace Sigma.Controllers
             }
             else
             {
-                return RedirectToAction("Sign_in","Home");
+                return RedirectToAction("Sign_in", "Home");
             }
         }
 
@@ -239,103 +242,33 @@ namespace Sigma.Controllers
         [HttpGet]
         public ActionResult EditUserPage()
         {
-            var view = (user_projects, user_profile,user_links);
+            var view = (user_projects, user_profile, user_links);
             return View(view);
         }
 
         [HttpPost]
-        public ActionResult EditUserPage(string UserAvatarUrl,string UserName, string User_position ,string UserAbout, string project_order,string UserUrl)
+        public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string User_position, string UserAbout)
         {
-            project_order = project_order.Trim().ToLower();
-            if (!string.IsNullOrEmpty(project_order))
-            {   
-                var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
-                if (string.IsNullOrEmpty(UserAvatarUrl))
-                {
-                    if (user_info.avatarUrl == null)
-                    {
-                        user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
-                    }
-                }
-                else
-                {
-                    user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
-                }
-                user_info.Name = UserName;
-                user_info.position = User_position;
-                user_info.about = UserAbout;
-                var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
-                foreach (var project in user_projects_info)
-                {
-                    project.user_name = UserName;
-                }
-                user_profile = user_info;
-                user_projects = user_projects_info;
-                if (project_order == "all projects")
-                {
-                    var view = (user_projects, user_profile,user_links);
-                    return View(view);
-                }
-                else
-                {
-                    var user_projects_order = user_projects.Where(x => x.Title.Trim().ToLower().Contains(project_order)).ToList();
-                    var view = (user_projects_order, user_profile,user_links);
-                    return View(view);
-                }
-            }
-            else
+            var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
+            if (UserAvatar != null)
             {
-                var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
-                if (string.IsNullOrEmpty(UserAvatarUrl))
-                {
-                    if (user_info.avatarUrl == null)
-                    {
-                        user_info.avatarUrl = "/Content/img/avatars/avatar0.jpg";
-                    }
-                }
-                else
-                {
-                    user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarUrl;
-                }
-                user_info.Name = UserName;
-                user_info.position = User_position;
-                user_info.about = UserAbout;
-                var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
-                foreach (var project in user_projects_info)
-                {
-                    project.user_name = UserName;
-                }
-                user_profile = user_info;
-                user_projects = user_projects_info;
-                if (!string.IsNullOrEmpty(UserUrl))
-                {
-                    Link link = Links.getLink(UserUrl);
-                    if (link != null && !Links.existProvider(UserUrl,user_links))
-                    {
-                        link.user_id = user_id;
-                        if (db.Links.Count() > 0)
-                        {
-                            link.Id = db.Links.AsEnumerable().Last().Id + 1;
-                        }
-                        else
-                        {
-                            link.Id = 1;
-                        }
-                        db.Links.Add(link);
-                        user_links.Add(link);
-                        db.SaveChanges();
-                    }
-                    var view = (user_projects, user_profile,user_links);
-                    return View(view);
-                }
-                else
-                {
-                    db.SaveChanges();
-                    return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-                }
+                string UserAvatarName = "avatar" + user_profile.Id.ToString() + ".jpg";
+                UserAvatar.SaveAs(Path.Combine(fullPath, UserAvatarName));
+                user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarName;
             }
+            user_info.Name = UserName;
+            user_info.position = User_position;
+            user_info.about = UserAbout;
+            var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
+            foreach (var project in user_projects_info)
+            {
+                project.user_name = UserName;
+            }
+            user_profile = user_info;
+            user_projects = user_projects_info;
+            db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
-
         public ActionResult AddProject()
         {
             Project project = new Project
@@ -354,14 +287,16 @@ namespace Sigma.Controllers
             return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
 
-        public void DeleteLink(int id=0)
+        public void DeleteLink(string id_string = "")
         {
-            var deleting_link = user_links.Find(x=>x.Id == id);
+            var id = Convert.ToInt32(id_string.Substring(4));
+            var deleting_link = user_links.Find(x => x.Id == id);
             if (deleting_link != null)
             {
                 db.Entry(deleting_link).State = EntityState.Deleted;
                 user_links.Remove(deleting_link);
             }
+            db.SaveChanges();
         }
 
         public void GetProjects(string ids_array)
@@ -385,5 +320,15 @@ namespace Sigma.Controllers
             }
             db.SaveChanges();
         }
+        public void AddLink(string Url,string id)
+        {
+            Link link = Links.getLink(Url);
+            link.user_id = user_id;
+            id = id.Substring(4);
+            link.Id = Convert.ToInt32(id);
+            db.Links.Add(link);
+            user_links.Add(link);
+            db.SaveChanges();
+        }
     }
-}
+}   

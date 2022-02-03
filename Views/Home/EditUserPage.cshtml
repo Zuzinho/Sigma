@@ -34,13 +34,23 @@
             </div>
         </div>
     </div>
-    <form asp-controller="Home" asp-action="EditUserPage" method="post">
+    @using (Html.BeginForm("EditUserPage", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        List<int> newest_id = new List<int>();
+        for (int i = (Model.Item2.Id - 1) * 10 + 1; i < Model.Item2.Id * 10 + 1; i++)
+        {
+            var exist = Model.Item3.Find(x => x.Id == i);
+            if (exist == null)
+            {
+                <div class="id" id="newest_id">@("link" + i.ToString())</div>
+            }
+        }
         <div class="container">
             <div class="user_info__row">
                 <div class="user_title">
                     <div class="input_image__row">
                         <div class="user_image">
-                            <input type="file" name="UserAvatarUrl" class="image_input">
+                            <input type="file" class="image_input" name="UserAvatar" onchange="GetAvatar(event)" accept="image/*">
                             <img class="image" src="@Model.Item2.avatarUrl" alt="">
                         </div>
                     </div>
@@ -50,19 +60,21 @@
                     </div>
                 </div>
                 <div class="user_links">
-                    @foreach (var link in Model.Item3)
-                    {
-                        string link_id = link.Id.ToString();
-                        <div id="@link_id" class="user_link_border">
-                            <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
-                            <div class="trash_border" onclick="deleteicon(@link_id)">
-                                <image class="trash_link" src="/Content/img/icons/Trash.png"></image>
+                    <div class="user_links_value">
+                        @foreach (var link in Model.Item3)
+                        {
+                            string link_id = "link" + link.Id.ToString();
+                            <div id="@link_id" class="user_link_border-active">
+                                <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
+                                <div id="LinkDeleteButton" class="trash_border" onclick="deleteicon(@link_id)">
+                                    <image class="trash_link" src="/Content/img/icons/Trash.png" alt=""></image>
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                     <div class="add_new_link__row">
-                        <input type="text" name="UserUrl" class="add_new_link_text" placeholder="Add new...">
-                        <image class="add_new_link_image" src="/Content/img/icons/Plus.png"></image>
+                        <input id="LinkAdd" type="text" name="UserUrl" class="add_new_link_text" placeholder="Add new...">
+                        <image id="LinkAddButton" class="add_new_link_image" src="/Content/img/icons/Plus.png" alt=""></image>
                     </div>
                 </div>
             </div>
@@ -82,28 +94,28 @@
         <div class="container">
             <div class="search__project_text">Select your brightest projects</div>
             <div class="project__search">
-                <input formmethod="get" id="ProjectSearch" class="project_selection__text" name="project_order" placeholder="Search for a project">
-                <image class="magglass" src="/Content/img/icons/magnifying-glass.png"onclick="sendProjects()"></image>
+                <input id="ProjectSearch" class="project_selection__text" name="project_order" placeholder="Search for a project">
+                <div class="magglass_block">
+                    <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png" onclick="searchProjects()"></image>
+                </div>
             </div>
-            <div class="see_all">Enter 'all projects' to see all projects</div>
-
             <div class="projects__row">
                 @foreach (var project in Model.Item1)
                 {
                     string project_id = "project" + project.Id.ToString();
                     if (Convert.ToBoolean(project.selected))
                     {
-                <div id="@project_id" class="project__item project__item-active" onclick="ChangeActive(@project_id)">
-                    <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
-                    <div class="item__name">@project.Title</div>
-                </div>
+                        <div id="@project_id" class="project__item project__item-active" onclick="ChangeActive(@project_id)">
+                            <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                            <div class="item__name">@project.Title</div>
+                        </div>
                     }
                     else
                     {
-                    <div id="@project_id" class="project__item" onclick="ChangeActive(@project_id)">
-                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
-                        <div class="item__name">@project.Title</div>
-                    </div>
+                        <div id="@project_id" class="project__item" onclick="ChangeActive(@project_id)">
+                            <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                            <div class="item__name">@project.Title</div>
+                        </div>
                     }
                 }
             </div>
@@ -115,15 +127,18 @@
                 </button>
             </div>
         </div>
-    </form>
+    }
     <div class="footer">
         Sigma 2021
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="~/Content/js/markdown.js"></script>
-    <script src="~/Content/js/deleteicon.js"></script>
     <script src="~/Content/js/ChangeActive.js"></script>
     <script src="~/Content/js/sendProjects.js"></script>
+    <script src="~/Content/js/searchProjects.js"></script>
+    <script src="~/Content/js/Links.js"></script>
+    <script src="~/Content/js/GetAvatar.js"></script>
 </body>
 </html>

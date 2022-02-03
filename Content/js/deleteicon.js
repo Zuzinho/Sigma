@@ -1,12 +1,10 @@
 function deleteicon(elem_id) {
-    if (confirm("Are you sure thet you want to delete this link?")) {
-        let id = Number(elem_id);
-        let id_block = document.getElementById(elem_id);
-        id_block.remove();
+    if (confirm("Are you sure that you want to delete this link?")) {
+        elem_id.remove();
         jQuery.ajax({
             type: "POST",
             url: "/Home/DeleteLink",
-            data: "id=" + id
+            data: "id_string=" + elem_id.id
         });
     }
 }
