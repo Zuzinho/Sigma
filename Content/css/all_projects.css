@@ -1,0 +1,239 @@
+*{
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+*,*:before,*:after{
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+:focus,:active{outline: none;}
+a:focus,a:active{outline: none;}
+nav,footer,header,aside{display: block;}
+html,body{
+	height: 100%;
+	width: 100%;
+	font-size: 100%;
+	line-height: 1;
+	font-size: 14px;
+	-ms-text-size-adjust: 100%;
+	-moz-text-size-adjust: 100%;
+	-webkit-text-size-adjust: 100%;
+}
+input,button,textarea{font-size: inherit;}
+input::-ms-clear{display: none;}
+button{cursor: pointer;}
+button::-moz-focus-inner{padding: 0;border: 0;}
+a,a:visited{text-decoration: none;}
+a:hover{text-decoration: none;}
+ul li{list-style: none;}
+img{vertical-align: top;}
+h1,h2,h3,h4,h5,h6{font-size: inherit;font-weight: 400;}
+/*browser-sync start --server --files "*.css, *.html"*/
+
+body{
+	font-family: 'Noto Sans';
+}
+.container {
+	margin: 60px 250px;
+}
+.header{
+}
+
+.header__row {
+	display: flex;
+}
+
+.header__title {
+	flex-grow: 1;
+	display: flex;
+	margin: 48px 0 0 272px;
+}
+.header__logo{
+	width: 64px;
+	height: 64px;
+	background: #6625D4;
+	border-radius: 10px;
+	position: relative;
+}
+.header__logo span{
+	display: inline-block;
+	font-size: 64px;
+	top: -6px;
+	left: 10px;
+	color: #ffffff;
+	position: absolute;
+}
+
+.header__info{
+	padding: 0 0 0 20px;
+}
+.header__name {
+	font-size: 24px;
+	line-height: 33px;
+	color: #000000;
+}
+.header__tagname {
+	line-height: 19px;
+	color: #777777;
+}
+.header__links {
+	flex-grow: 1;
+	margin: 69px 0 0 0;
+	padding: 0 0 0 100px;
+}
+.my_portfolio {
+	margin: 0 24px 0 0;
+	font-size: 16px;
+	color: #000000;
+}
+.own_portfolio {
+	margin: 0 24px 0 0;
+	font-size: 16px;
+	color: #000000;
+	text-decoration:underline;
+}
+.actions_dropdown {
+	position: relative;
+	display: inline-block;
+}
+.actions {
+	display: inline;
+	font-size: 16px;
+	line-height: 22px;
+	margin: 0 24px 0 0;
+}
+.actions_content {
+	display: none;
+	position: absolute;
+	right:-10px;
+}
+.actions_dropdown:hover .actions_content {
+	display: flex;
+	flex-direction: column;
+	width: 141px;
+	height: 138px;
+	border: 1px solid #000000;
+	box-shadow: 8px 8px 0px #000000;
+	border-radius: 4px;
+}
+.actions_content div {
+	background-color:#ffffff;
+	display: inline-block;
+	width: 138px;
+	height: 45px;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22px;
+	align-items: center;
+	padding: 10px 0;
+	text-align:center;
+}
+.edit {
+	color: #6625D4;
+}
+.add_project {
+	color: #6625D4;
+}
+.delete {
+	color: #E92323;
+}
+.actions_content div:hover {
+	background-color: #ddd;
+}
+.add_project {
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+.about {
+	color: #000000;
+	font-size: 16px;
+}
+
+.search__project_text{
+	width: 300px;
+	font-weight: bold;
+	font-size: 24px;
+	line-height: 150%;
+	margin: 0 auto;
+	margin-top:56px;
+}
+.project__search{
+	display: flex;
+	justify-content: space-between;
+	margin: 0 auto;
+	margin-top: 16px;
+	width: 256px;
+	height: 40px;
+	border: 1px solid #C4C4C4;
+	border-radius: 4px;
+	padding: 8px 12px;
+}
+.magglass_block{
+	display:inline-block;
+}
+.magglass_block:active{
+	margin-top:2px;
+}
+
+.projects__row {
+	display: flex;
+	margin: 50px 0 0 0;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+.project__item-active {
+	display: flex;
+	flex-direction: column;
+	width: 450px;
+	height: 396px;
+	margin: 0 0 50px 0;
+}
+
+.item__image {
+	width: 450px;
+	height: 256px;
+	background-size: cover;
+	background-color: #C4C4C4;
+}
+.item__name {
+	margin: 12px 0 0 0;
+	font-weight: bold;
+	font-size: 24px;
+	line-height: 150%;
+}
+.item__techs {
+	display: flex;
+	margin: 12px 0;
+}
+.item__tech {
+	margin: 0 12px 0 0;
+	width: 70px;
+	height: 20px;
+	text-align: center;
+	padding: 2px 0;
+	color: rgba(102, 37, 212, 0.75);
+	text-transform: uppercase;
+	font-size: 12px;
+	line-height: 16px;
+	background-color: rgba(102, 37, 212, 0.15);
+}
+.item__distr {
+	font-size: 16px;
+	line-height: 150%;
+	color: rgba(0, 0, 0, 0.8);
+	max-height: 48px;
+	overflow: hidden;
+}
+
+.footer {
+    background: #F2F2F2;
+    height: 70px;
+    width: 100%;
+    text-align: center;
+    color: #777777;
+    font-size: 16px;
+    line-height: 22px;
+    padding: 24px 0 0 0;
+}

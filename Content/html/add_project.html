@@ -1,0 +1,79 @@
+<!DOCTYPE html> 
+
+<html>
+	<head>
+		<title>Sigma</title>
+		<link rel="stylesheet" href="style.css">
+		<link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+		<meta charset="utf-8">
+	</head>
+	<body>
+	<div class="header">
+		<div class="header__row">
+				<div class="header__title">
+					<a href="/Content/html/index.html">
+						<div class="header__logo">
+							<span>σ</span>
+						</div>
+					</a>
+					<a href="/Content/html/index.html"><div class="header__info">
+											<div class="header__name">Sigma</div>
+											<div class="header__tagname">Where your portfolio starts</div>
+										</div></a>
+				</div>
+				<div class="header__links">
+					<a href="/Content/html/sign_up.html" class="my_portfolio">My portfolio</a>
+					<div class="actions_dropdown">
+                    <div class="actions">Actions</div>
+                    <div class="actions_content">
+                        <!-- <a href="@Url.Action("EditUserPage","Home")"> -->
+                            <div class="edit">Edit my profile</div>
+                        <!-- </a> -->
+                        <!-- <a href="@Url.Action("AddProject","Home")"> -->
+                            <div class="add_project">Add project</div>
+                        <!-- </a> -->
+                        <!-- <a href="@Url.Action("DeleteProfile" , "Home")"> -->
+                            <div class="delete">Delete profile</div>
+                        <!-- </a> -->
+                    </div>
+                </div>
+					<a href="/Content/html/about.html" class="about">About</a>
+				</div>
+		</div>
+	</div>
+	<form action="#">
+		<div class="flex_container">
+			<div class="container">
+					<div class="project_input__row"><div class="add_project_title__row">
+								<div class="title_avatar"></div>
+								<div class="title_text">Add project</div>
+							</div>
+						<input type="text" name="Name" class="input" placeholder="Project name">
+						<input type="text" name="Technos" class="input" placeholder="Technologies">
+		
+						<div class="input_info">Write technologies that you have used in that project, separating them with a comma </div>
+					</div>
+					 <div class="row__type">
+				        <a href="#editorForm" class="editor-tabs__item">Editor</a>
+				        <a href="#editorPreview" class="editor-tabs__item">Preview</a>
+				    </div>
+			       <textarea id="editorForm" placeholder="Project description"
+			                 class="markdown__text_input" name="UserAbout"></textarea>
+			       <div id="editorPreview" class="editor-content__item"></div>
+			         <label for="input_file" class="input input_file">
+			       	<input id="input_file" type="file">
+						<div class="input_file_text">Download project preview</div>
+						</label>
+		
+						<button class="button input">Continue</button>
+				</div>
+				<img src="img/about4.png" alt="">
+		</div>
+	</form>
+	<div class="footer">
+		Sigma 2021
+	</div>
+	<script src="js/markdown.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+	</body>
+</html>
