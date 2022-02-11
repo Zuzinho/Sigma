@@ -41,7 +41,7 @@ body{
 	display: flex;
 }
 .container {
-	margin: 60px 0 0 272px;
+	margin: 60px 0 0 120px;
 	width: 320px;
 }
 .header__row {
@@ -164,10 +164,10 @@ body{
 	display: flex;
 }
 .title_avatar {
+	display:inline-block;
 	width: 64px;
 	height: 64px;
 	margin: 0 8px 0 0;
-	background: #C4C4C4;
 	border-radius: 50% 50%;
 }
 .title_text {
@@ -260,21 +260,24 @@ input[type="file"] {
 }
 
 .input_file_text{
+	display:inline-block;
 	position: relative;
 }
 
 .input_file_text::before {
 	position: absolute;
-	left: -15px;
+	left: -30px;
 	bottom:1px;
 	content: "";
 	display: inline-block;
 	width: 24px;
 	height: 20px;
-	background: url("img/icons/UploadSimple.png") center;
+	background: url("/Content/img/icons/UploadSimple.png") center;
 	background-size: cover;
 }
-
+input:focus{
+	border:2px solid #000;
+}
 .button{
 	background: #6625D4;
 	color: #FFFFFF;

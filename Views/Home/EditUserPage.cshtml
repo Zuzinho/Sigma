@@ -106,14 +106,18 @@
                     if (Convert.ToBoolean(project.selected))
                     {
                         <div id="@project_id" class="project__item project__item-active" onclick="ChangeActive(@project_id)">
-                            <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                            <div class="item__image" style="background-image:url('@project.PhotoUrl')">
+                                <div class="selected_star"></div>
+                            </div>
                             <div class="item__name">@project.Title</div>
                         </div>
                     }
                     else
                     {
                         <div id="@project_id" class="project__item" onclick="ChangeActive(@project_id)">
-                            <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                            <div class="item__image" style="background-image:url('@project.PhotoUrl')">
+                                <div class="selected_star"></div>
+                            </div>
                             <div class="item__name">@project.Title</div>
                         </div>
                     }

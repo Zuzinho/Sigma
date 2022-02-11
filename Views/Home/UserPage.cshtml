@@ -1,6 +1,5 @@
 ﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User, bool, List<Sigma.Models.Link>>
 @using MarkdownSharp;
-@using Sigma.Controllers;
 @{
     Layout = "//Views//MasterViewUserPage.cshtml";
 } 
@@ -93,25 +92,20 @@
                 var project = sort_model[i];
                 if (i < 6)
                 {
-                    <div class="project__item-active">
+                    Markdown markdown = new Markdown();
+                    string markdown_text = markdown.Transform(project.About);
+                    var technos = project.technology.Split(',');
+                    <a href="@Url.Action("ProjectPage","Home",new {item_id = project.Id})" class="project__item-active">
                         <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                         <div class="item__name">@project.Title</div>
                         <div class="item__techs">
-                            <div class="item__tech">@project.technology</div>
-                        </div>
-                        <div class="item__distr">@project.Description</div>
-                    </div>
-                }
-                else 
-                {
-                <div class="project__item-not_active">
-                    <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
-                    <div class="item__name">@project.Title</div>
-                    <div class="item__techs">
-                        <div class="item__tech">@project.technology</div>
-                    </div>
-                    <div class="item__distr">@project.Description</div>
-                </div>
+                            @foreach (var techno in technos)
+                            {
+                                <div class="item__tech">@techno</div>
+                            }
+                            </div>
+                        <div class="item__distr">@Html.Raw(markdown_text)</div>
+                    </a>
                 }
             }
         }
@@ -119,12 +113,11 @@
 </div>
 @if (Model.Item1.Count > 6)
 {
-    <div class="all_projects_block" onclick="ShowProjects()">
+    <div class="all_projects_block">
         <div class="container">
-            <div class="all_projects">
+            <a href="@Url.Action("AllProjects","Home",new {page = 1,item_id = Model.Item2.Id})" class="all_projects">
                 See all
-            </div>
+            </a>
         </div>
     </div>
 }
-<script src="~/Content/js/ShowProjects.js"></script>

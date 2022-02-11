@@ -429,27 +429,37 @@
       <DependentUpon>SigmaDB.mdf</DependentUpon>
     </Content>
     <Content Include="Content\css\about.css" />
+    <Content Include="Content\css\add_project.css" />
+    <Content Include="Content\css\all_projects.css" />
     <Content Include="Content\css\edit_user_page.css" />
+    <Content Include="Content\css\project_page.css" />
     <Content Include="Content\css\sign_in.css" />
     <Content Include="Content\css\sign_up.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\css\user_page.css" />
     <Content Include="Content\html\about.html" />
+    <Content Include="Content\html\add_project.html" />
+    <Content Include="Content\html\all_projects.html" />
     <Content Include="Content\html\edit_user_page.html" />
     <Content Include="Content\html\index.html" />
+    <Content Include="Content\html\project_page.html" />
     <Content Include="Content\html\sign_in.html" />
     <Content Include="Content\html\sign_up.html" />
     <Content Include="Content\html\user_page.html" />
     <Content Include="Content\img\about1.jpg" />
     <Content Include="Content\img\about2.jpg" />
     <Content Include="Content\img\about3.jpg" />
+    <Content Include="Content\img\about4.png" />
     <Content Include="Content\img\avatars\avatar0.jpg" />
     <Content Include="Content\img\avatars\avatar1.jpg" />
     <Content Include="Content\img\icons\arrow-left.png" />
     <Content Include="Content\img\icons\arrow-right.png" />
     <Content Include="Content\img\icons\magnifying-glass.png" />
     <Content Include="Content\img\icons\Plus.png" />
+    <Content Include="Content\img\icons\selectedStar.png" />
+    <Content Include="Content\img\icons\Star.png" />
     <Content Include="Content\img\icons\Trash.png" />
+    <Content Include="Content\img\icons\UploadSimple.png" />
     <Content Include="Content\img\links_icons\Facebook - Original.png" />
     <Content Include="Content\img\links_icons\Github - Original.png" />
     <Content Include="Content\img\links_icons\LinkedIn - Original.png" />
@@ -466,7 +476,6 @@
     <Content Include="Content\js\markdown.js" />
     <Content Include="Content\js\searchProjects.js" />
     <Content Include="Content\js\sendProjects.js" />
-    <Content Include="Content\js\ShowProjects.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -520,6 +529,10 @@
     <Content Include="Views\Home\Sign_in.cshtml" />
     <Content Include="Views\MasterViewIndex.cshtml" />
     <Content Include="Views\Home\EditUserPage.cshtml" />
+    <Content Include="Views\Home\AddProject.cshtml" />
+    <Content Include="Views\Home\AllProjects.cshtml" />
+    <Content Include="Views\Home\ProjectPage.cshtml" />
+    <Content Include="Views\Home\EditProjectPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -532,6 +545,9 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\img\Projects_avatars\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

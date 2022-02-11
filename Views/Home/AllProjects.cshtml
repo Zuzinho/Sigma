@@ -1,0 +1,113 @@
+﻿@model ValueTuple<List<Sigma.Models.Project>,Sigma.Models.User,List<int>>
+    @using MarkdownSharp;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Sigma</title>
+    <link rel="stylesheet" href="~/Content/css/all_projects.css">
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <meta charset="utf-8">
+</head>
+<body>
+    <div class="header">
+        <div class="header__row">
+            <div class="header__title">
+                <a href="@Url.Action("Index","Home",new {page = 1})">
+                    <div class="header__logo">
+                        <span>σ</span>
+                    </div>
+                </a>
+                <a href="@Url.Action("Index","Home",new {page = 1})">
+                    <div class="header__info">
+                        <div class="header__name">Sigma</div>
+                        <div class="header__tagname">Where your portfolio starts</div>
+                    </div>
+                </a>
+            </div>
+            <div class="header__links">
+                <a href="@Url.Action("MyPortfolio","Home")" class="my_portfolio">My portfolio</a>
+                <a href="@Url.Action("About","Home")" class="about">About</a>
+            </div>
+        </div>
+    </div>
+    <div class="search__project_text">Search for <a href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})" class="user_name">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
+    <form asp-controller="Home" asp-action="AllProjects">
+        <div class="project__search">
+            <input id="ProjectSearch" class="project_selection__text" name="order" value="@ViewData["order"]" placeholder="Search for a project">
+            <div class="magglass_block">
+                <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png"></image>
+            </div>
+        </div>
+        <div class="container">
+            <div class="projects__row">
+                @foreach (var project in Model.Item1)
+                {
+                    Markdown markdown = new Markdown();
+                    string markdown_text = markdown.Transform(project.About);
+                    var technos = project.technology.Split(',');
+                    <a href="@Url.Action("ProjectPage", "Home", new { item_id = Model.Item2.Id })" class="project__item-active">
+                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                        <div class="item__name">@project.Title</div>
+                        <div class="item__techs">
+                            @foreach (var techno in technos)
+                            {
+                                <div class="item__tech">@techno</div>
+                            }
+                            </div>
+                        <div class="item__distr">@Html.Raw(markdown_text)</div>
+                    </a>
+                }
+            </div>
+        </div>
+    </form>
+    <div class="page_turner">
+        <div class="page_turner__row pages">
+            <div class="pages__arrow_left"></div>
+            <div class="pages__values">
+                @if (Model.Item3.Count > 1)
+                {
+                    int current_page = Model.Item3.Last();
+                    Model.Item3.RemoveAt(Model.Item3.Count - 1);
+                    if (current_page > 1)
+                    {
+                        <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"],page = current_page - 1 ,item_id = Model.Item2.Id})" class="previous_page"></a>
+                    }
+                    <div class="pages_list">
+                        @foreach (int page in Model.Item3)
+                        {
+                            if (page != current_page && page > 0)
+                            {
+                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="page_value">@page</a>
+                            }
+                            else if (page == 0)
+                            {
+                                <span class="page_value">...</span>
+                            }
+                            else if (page == Model.Item3.Max())
+                            {
+                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="current_last_page_value">@page</a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="current_page_value">@page</a>
+                            }
+                        }
+                    </div>
+                    if (current_page < Model.Item3.Max())
+                    {
+                        <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = current_page + 1 ,item_id = Model.Item2.Id})" class="next_page"></a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        Sigma 2021
+    </div>
+</body>
+</html>

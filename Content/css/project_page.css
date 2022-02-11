@@ -36,7 +36,7 @@ body{
 	font-family: 'Noto Sans';
 }
 .container {
-	margin: 60px 272px;
+	margin: 60px 272px 0 272px;
 }
 .header{
 }
@@ -114,7 +114,7 @@ body{
 	display: flex;
 	flex-direction: column;
 	width: 141px;
-	height: 138px;
+	height: 95px;
 	border: 1px solid #000000;
 	box-shadow: 8px 8px 0px #000000;
 	border-radius: 4px;
@@ -133,6 +133,7 @@ body{
 }
 .edit {
 	color: #6625D4;
+	border-bottom:1px solid #000;
 }
 .add_project {
 	color: #6625D4;
@@ -153,6 +154,7 @@ body{
 }
 .project{
 	display: flex;
+	flex-wrap:wrap;
 	flex-direction:column;
 }
 .user_name {
@@ -168,6 +170,7 @@ body{
 	display: flex;
 	justify-content: space-between;
 	height: 49px;
+
 }
 .project_title {
 	font-weight: 600;
@@ -179,20 +182,20 @@ body{
 	justify-content: end;
 }
 .project_techno {
-	width: 78px;
 	height: 24px;
 	background: rgba(102, 37, 212, 0.15);
 	border-radius: 4px;
-	padding: 6px 16px 4px 16px;
+	padding: 6px 10px 4px 10px;
 	font-size: 12px;
 	color: rgba(102, 37, 212, 0.75);
 	text-transform: uppercase;
-	margin: 0 0 0 12px;
+	margin: 20px 0 0 12px;
 }
 
-.project_image{
-	background: #C4C4C4;
+.project_image {
+	width: 100%;
 	height: 512px;
+	background-size: cover;
 }
 .project_disc{
 	margin: 16px 0 0 0;
@@ -207,7 +210,7 @@ body{
 	margin: 0 0 16px 0;
 }
 
-..projects__row {
+.projects__row {
 	display: flex;
 	margin: 50px 0 0 0;
 	flex-wrap: wrap;
@@ -226,9 +229,9 @@ body{
 	width: 450px;
 	height: 256px;
 	background-size: cover;
-	background: #C4C4C4;
 }
 .item__name {
+	color:#000;
 	margin: 12px 0 0 0;
 	font-weight: bold;
 	font-size: 24px;
@@ -240,10 +243,9 @@ body{
 }
 .item__tech {
 	margin: 0 12px 0 0;
-	width: 70px;
 	height: 20px;
 	text-align: center;
-	padding: 2px 0;
+	padding: 2px 10px;
 	color: rgba(102, 37, 212, 0.75);
 	text-transform: uppercase;
 	font-size: 12px;

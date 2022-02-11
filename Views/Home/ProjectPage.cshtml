@@ -1,0 +1,104 @@
+﻿@model ValueTuple<Sigma.Models.Project,Sigma.Models.User,List<Sigma.Models.Project>,bool>
+    @using MarkdownSharp;
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Sigma</title>
+    <link rel="stylesheet" href="~/Content/css/project_page.css">
+    <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
+    <meta charset="utf-8">
+</head>
+<body>
+    <div class="header">
+        <div class="header__row">
+            <div class="header__title">
+                <a href="@Url.Action("Index","Home",new {page = 1})">
+                    <div class="header__logo">
+                        <span>σ</span>
+                    </div>
+                </a>
+                <a href="@Url.Action("Index","Home",new {page = 1})">
+                    <div class="header__info">
+                        <div class="header__name">Sigma</div>
+                        <div class="header__tagname">Where your portfolio starts</div>
+                    </div>
+                </a>
+            </div>
+            <div class="header__links">
+                <a href="@Url.Action("MyPortfolio","Home")" class="my_portfolio">My portfolio</a>
+                @if (Model.Item4)
+                {
+                <div class="actions_dropdown">
+                    <div class="actions">Actions</div>
+                    <div class="actions_content">
+                         <a href="@Url.Action("EditProjectPage", "Home",new {item_id = Model.Item1.Id})"> 
+                            <div class="edit">Edit this project</div>
+                         </a>
+                         <a href="@Url.Action("DeleteProject", "Home",new {item_id = Model.Item1.Id})"> 
+                            <div class="delete">Delete project</div>
+                         </a> 
+                    </div>
+                </div>
+                }
+                <a href="@Url.Action("About","Home")" class="about">About</a>
+            </div>
+        </div>
+    </div>
+    <div class="project">
+        <div class="user_name"><a class="user_link" href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> project</div>
+        <div class="container">
+            <div class="project_title__row">
+                <div class="project_title">@Model.Item1.Title</div>
+                @if (true)
+                {
+                    var technos = Model.Item1.technology.Split(',');
+                    <div class="project_technos__row">
+                        @foreach (var techno in technos)
+                        {
+                            <div class="project_techno">@techno</div>
+                        }
+                    </div>
+                }
+                </div>
+        </div>
+        <div class="container">
+            <div class="project_image" style="background-image:url('@Model.Item1.PhotoUrl')"></div>
+            @if (true)
+            {
+                Markdown markdown = new Markdown();
+                <div class="project_disc">@Html.Raw(markdown.Transform(Model.Item1.About))</div>
+            }
+        </div>
+    </div>
+    <div class="container">
+        <div class="other_project_title">Other <a class="user_link" href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
+        <div class="projects__row">
+                @foreach (var project in Model.Item3)
+                {
+                    Markdown markdown = new Markdown();
+                    string markdown_text = markdown.Transform(project.About);
+                    var technos = project.technology.Split(',');
+                    <a href="@Url.Action("ProjectPage", "Home", new { item_id = project.Id })" class="project__item-active">
+                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                        <div class="item__name">@project.Title</div>
+                        <div class="item__techs">
+                            @foreach (var techno in technos)
+                            {
+                                <div class="item__tech">@techno</div>
+                            }
+                        </div>
+                        <div class="item__distr">@Html.Raw(markdown_text)</div>
+                    </a>
+                }
+        </div>
+    </div>
+    <div class="footer">
+        Sigma 2021
+    </div>
+</body>
+</html>

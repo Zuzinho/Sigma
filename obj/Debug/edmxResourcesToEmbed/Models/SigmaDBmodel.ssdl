@@ -25,7 +25,6 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Title" Type="nvarchar" MaxLength="128" />
     <Property Name="technology" Type="nvarchar" MaxLength="64" />
-    <Property Name="Description" Type="nvarchar" MaxLength="512" />
     <Property Name="PhotoUrl" Type="nvarchar" MaxLength="1024" />
     <Property Name="Link" Type="nvarchar" MaxLength="1024" />
     <Property Name="About" Type="nvarchar(max)" />

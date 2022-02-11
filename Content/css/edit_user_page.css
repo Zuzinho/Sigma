@@ -342,17 +342,30 @@ body{
 	width: 325px;
 	height: 204px;
 	margin: 0 0 24px 0;
+	position:relative;
 }
-.project__item-active {
-	background-color: #6625D4;
-	margin-top: -4px;
-	margin-left: -4px;
-	box-shadow: #000 8px 8px;
+.project__item .selected_star {
+		position: absolute;
+		top: 18px;
+		right: 18px;
+		display: inline-block;
+		width: 28px;
+		height: 28px;
+		background: url("/Content/img/icons/Star.png") center;
+		background-size:cover;
+	}
+
+.project__item-active .selected_star {
+	position:absolute;
+	top:18px;
+	right:18px;
+	display:inline-block;
+	width:28px;
+	height:28px;
+	background:url("/Content/img/icons/selectedStar.png") center;
+	background-size:cover;
 }
 
-.project__item-not_selected {
-	display: none;
-}
 	.item__image {
 		width: 325px;
 		height: 166px;

@@ -13,11 +13,14 @@ namespace Sigma.Controllers
     {
         public static int user_id = 0;
         private int pageSize = 12;
+        private int projectSize = 6;
         private static User user_profile = new User();
+        private static User item_profile = new User(); 
         private static List<Project> user_projects = new List<Project>();
+        private static List<Project> item_projects = new List<Project>();
         private static Database1Entities db = new Database1Entities();
         private static List<Link> user_links = new List<Link>();
-        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma\\Content\\img\\avatars";
+        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma\\Content\\img";
         public ActionResult Index(string order, int page = 1)
         {
             ViewData["order"] = order;
@@ -27,10 +30,10 @@ namespace Sigma.Controllers
             if (!String.IsNullOrEmpty(order))
             {
                 order = order.Trim().ToLower();
-                ordquery = ordquery.Where(x => x.user_name.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order) || x.technology.Trim().ToLower().Contains(order));
+                ordquery = ordquery.Where(x => x.user_name.ToLower().Contains(order) || x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order));
                 foreach (var item in ordquery)
                 {
-                    var projects = ordquery.Where(x => x.technology.Trim().ToLower().Contains(order) || x.Title.Trim().ToLower().Contains(order));
+                    var projects = ordquery.Where(x => x.technology.ToLower().Contains(order) || x.Title.ToLower().Contains(order));
                     projects_list.Add(item);
                     var user = db.Users.FirstOrDefault(x => x.Id == item.user_id);
                     if (!users_list.Contains(user))
@@ -38,7 +41,7 @@ namespace Sigma.Controllers
                         users_list.Add(user);
                     }
                 }
-                var users = db.Users.Where(x => x.Name.Trim().ToLower().Contains(order));
+                var users = db.Users.Where(x => x.Name.ToLower().Contains(order));
                 foreach (var user in users)
                 {
                     if (!users_list.Contains(user))
@@ -61,11 +64,20 @@ namespace Sigma.Controllers
                 {
                     count++;
                 }
-                List<List<int>> pages_list = Paginations.paginations_list(count);
-                List<int> pages = pages_list[page - 1];
-                pages.Add(page);
-                var view = (projects_list, users_list_, pages);
-                return View(view);
+                if (count > 0)
+                {
+                    List<List<int>> pages_list = Paginations.paginations_list(count);
+                    List<int> pages = pages_list[page - 1];
+                    pages.Add(page);
+                    var view = (projects_list, users_list_, pages);
+                    return View(view);
+                }
+                else
+                {
+                    List<int> pages = new List<int>() { 0 };
+                    var view = (projects_list, users_list_, pages);
+                    return View(view);
+                }
             }
             else
             {
@@ -99,6 +111,8 @@ namespace Sigma.Controllers
             is_owner = (item_id == user_id);
             if (is_owner)
             {
+                item_profile = user_profile;
+                item_projects = user_projects;
                 var view = (user_projects, user_profile, is_owner, user_links);
                 return View(view);
             }
@@ -106,6 +120,8 @@ namespace Sigma.Controllers
             {
                 var user = db.Users.FirstOrDefault(x => x.Id == item_id);
                 var projects = db.Projects.Where(x => x.user_id == item_id).ToList();
+                item_profile = user;
+                item_projects = projects;
                 var links = db.Links.Where(x => x.user_id == item_id).ToList();
                 if (user == null)
                 {
@@ -250,10 +266,11 @@ namespace Sigma.Controllers
         public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string User_position, string UserAbout)
         {
             var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
+            string path = fullPath + "\\avatars";
             if (UserAvatar != null)
             {
                 string UserAvatarName = "avatar" + user_profile.Id.ToString() + ".jpg";
-                UserAvatar.SaveAs(Path.Combine(fullPath, UserAvatarName));
+                UserAvatar.SaveAs(Path.Combine(path, UserAvatarName));
                 user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarName;
             }
             user_info.Name = UserName;
@@ -269,24 +286,225 @@ namespace Sigma.Controllers
             db.SaveChanges();
             return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
+
+        [HttpGet]
         public ActionResult AddProject()
         {
-            Project project = new Project
+            List<string> view = new List<string>
             {
-                Title = "Stacko social net",
-                Id = db.Projects.AsEnumerable().Last().Id + 1,
-                technology = "ASP.NET",
-                user_id = user_profile.Id,
+                user_profile.avatarUrl
+            };
+            return View(view);
+        }
+        [HttpPost]
+        public ActionResult AddProject(string Name,string Technos,string ProjectAbout, HttpPostedFileBase AvatarUrl)
+        {
+            Project project = new Project()
+            {
+                Title = Name,
+                technology = Technos,
+                About = ProjectAbout,
                 user_name = user_profile.Name,
-                PhotoUrl = "/Content/img/title.jpg",
+                user_id = user_id,
                 selected = false
             };
+            if (db.Projects.Count() > 0)
+            {
+                project.Id = db.Projects.AsEnumerable().Last().Id +1;
+            }
+            else
+            {
+                project.Id = 1;
+            }
+            if (AvatarUrl != null)
+            {
+                string path = fullPath + "\\Projects_avatars";
+                string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
+                AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
+                project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
+            }
+            else
+            {
+                project.PhotoUrl = "/Content/img/title.jpg";
+            }
             db.Projects.Add(project);
             user_projects.Add(project);
+            item_projects.Add(project);
             db.SaveChanges();
             return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
 
+        public ActionResult AllProjects(string order, int page = 1, int item_id=0)
+        {
+            User user = new User();
+            List<Project> projects = new List<Project>();
+            if (user_id == item_id)
+            {
+                user = user_profile;
+                projects = user_projects;
+            }
+            else
+            {
+                user = item_profile;
+                projects = item_projects;
+            }
+            ViewData["order"] = order;
+            if (String.IsNullOrEmpty(order))
+            {
+                List<Project> projects_list_ = new List<Project>();
+                for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
+                {
+                    if (i >= projects.Count)
+                    {
+                        break;
+                    }
+                    projects_list_.Add(projects[i]);
+                }
+                int count = 0;
+                count = projects.Count() / projectSize;
+                if (projects.Count() % projectSize > 0)
+                {
+                    count++;
+                }
+                if (count > 0)
+                {
+                    List<List<int>> pages_list = Paginations.paginations_list(count);
+                    List<int> pages = pages_list[page - 1];
+                    pages.Add(page);
+                    var view = (projects_list_, user, pages);
+                    return View(view);
+                }
+                else
+                {
+                    List<int> pages = new List<int> { 0 };
+                    var view = (projects_list_, user, pages);
+                    return View(view);
+                }
+            }
+            else
+            {
+                order = order.Trim().ToLower();
+                List<Project> projects_list_ = new List<Project>();
+                var user_projects_ = projects.Where(x => x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order)).ToList();
+                for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
+                {
+                    if (i >= user_projects_.Count)
+                    {
+                        break;
+                    }
+                    projects_list_.Add(user_projects_[i]);
+                }
+                int count = 0;
+                count = user_projects_.Count() / projectSize;
+                if (user_projects_.Count() % projectSize > 0)
+                {
+                    count++;
+                }
+                if (count > 0)
+                {
+                    List<List<int>> pages_list = Paginations.paginations_list(count);
+                    List<int> pages = pages_list[page - 1];
+                    pages.Add(page);
+                    var view = (projects_list_, user, pages);
+                    return View(view);
+                }
+                else
+                {
+                    List<int> pages = new List<int> { 0 };
+                    var view = (projects_list_, user, pages);
+                    return View(view);
+                }
+            }
+        }
+
+        public ActionResult ProjectPage(int item_id = 0)
+        {
+            Project project = item_projects.FirstOrDefault(x => x.Id == item_id);
+            if(project == null)
+            {
+                return Content("<h1>Страница не найдена</h1>");
+            }
+            else
+            {
+                if (item_projects.Count >= 5) {
+                    var other_projects = Sorting.Selected_sort(item_projects).GetRange(0, 4);
+                    if (other_projects.Contains(project))
+                    {
+                        other_projects = Sorting.Selected_sort(item_projects).GetRange(0, 5);
+                        other_projects.Remove(project);
+                    }
+                    var view = (project, item_profile, other_projects, item_profile == user_profile);
+                    return View(view);
+                }
+                else
+                {
+                    var other_projects = Sorting.Selected_sort(item_projects);
+                    other_projects.Remove(project);
+                    var view = (project, item_profile, other_projects, item_profile == user_profile);
+                    return View(view);
+                }
+            }
+        }
+        [HttpGet]
+        public ActionResult EditProjectPage(int item_id = 0)
+        {
+            var project = item_projects.FirstOrDefault(x => x.Id == item_id);
+            List<string> avatar = new List<string>
+            {
+                user_profile.avatarUrl
+            };
+            var view = (project, avatar);
+            return View(view);
+        }
+        [HttpPost]
+        public ActionResult EditProjectPage(string Name, string Technos, string ProjectAbout, HttpPostedFileBase AvatarUrl, int item_id = 0)
+        {
+            var project = db.Projects.FirstOrDefault(x => x.Id == item_id);
+            if (AvatarUrl != null)
+            {
+                string path = fullPath + "\\Projects_avatars";
+                string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
+                AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
+                project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
+            }
+            project.Title = Name;
+            project.technology = Technos;
+            project.About = ProjectAbout;
+            foreach(var proj in item_projects)
+            {
+                if(proj.Id == item_id)
+                {
+                    proj.Title = Name;
+                    proj.technology = Technos;
+                    proj.About = ProjectAbout;
+                    proj.PhotoUrl = project.PhotoUrl;
+                    break;
+                }
+            }
+            foreach (var proj in user_projects)
+            {
+                if (proj.Id == item_id)
+                {
+                    proj.Title = Name;
+                    proj.technology = Technos;
+                    proj.About = ProjectAbout;
+                    proj.PhotoUrl = project.PhotoUrl;
+                    break;
+                }
+            }
+            db.SaveChanges();
+            return RedirectToAction("ProjectPage", "Home", new { item_id = item_id });
+        }
+
+        public ActionResult DeleteProject(int item_id = 0)
+        {
+            var project = user_projects.Find(x => x.Id == item_id);
+            db.Entry(project).State = EntityState.Deleted;
+            item_projects.Remove(project);
+            user_projects.Remove(project);
+            db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { item_id  = user_id });
+        }
         public void DeleteLink(string id_string = "")
         {
             var id = Convert.ToInt32(id_string.Substring(4));

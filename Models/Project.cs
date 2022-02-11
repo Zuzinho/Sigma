@@ -16,7 +16,6 @@ namespace Sigma.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Description { get; set; }
         public string PhotoUrl { get; set; }
         public string Link { get; set; }
         public string About { get; set; }
@@ -24,6 +23,5 @@ namespace Sigma.Models
         public string technology { get; set; }
         public string user_name { get; set; }
         public Nullable<bool> selected { get; set; }
-
     }
 }
