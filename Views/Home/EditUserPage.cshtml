@@ -122,6 +122,10 @@
                         </div>
                     }
                 }
+                @if(Model.Item1.Count % 3 == 2)
+                {
+                <div class="project__item" hidden></div>
+                }
             </div>
         </div>
         <div class="container">

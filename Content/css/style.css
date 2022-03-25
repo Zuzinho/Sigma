@@ -223,6 +223,7 @@ body {
 }
 
 .user_page {
+    display:inline-block;
     margin: 30px 0;
     width: 310px;
 }

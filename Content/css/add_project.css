@@ -35,7 +35,7 @@ body{
 	font-family: 'Noto Sans';
 }
 
-.header{
+.header {
 }
 .flex_container{
 	display: flex;
@@ -115,7 +115,7 @@ body{
 .actions_dropdown:hover .actions_content {
 	display: flex;
 	flex-direction: column;
-	width: 141px;
+	width: 140px;
 	height: 138px;
 	border: 1px solid #000000;
 	box-shadow: 8px 8px 0px #000000;
@@ -285,6 +285,9 @@ input:focus{
 }
 img{
 	margin: 56px 0 0 64px;
+}
+.none {
+	display: none;
 }
 .footer {
     background: #F2F2F2;

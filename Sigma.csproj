@@ -53,6 +53,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Mail, Version=3.0.22035.1741, Culture=neutral, PublicKeyToken=6dc438ab78a525b3, processorArchitecture=MSIL">
+      <HintPath>packages\Mail.dll.3.0.22035.1741\lib\net48\Mail.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownSharp, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\MarkdownSharp.2.0.5\lib\net40\MarkdownSharp.dll</HintPath>
     </Reference>
@@ -387,6 +390,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Generator.cs" />
+    <Compile Include="Mail.cs" />
+    <Compile Include="Reference.cs" />
     <Compile Include="Links.cs" />
     <Compile Include="Models\Form.cs">
       <DependentUpon>SigmaDBmodel.tt</DependentUpon>
@@ -467,6 +473,7 @@
     <Content Include="Content\img\links_icons\Twitter - Original.png" />
     <Content Include="Content\img\links_icons\VK - Original.png" />
     <Content Include="Content\img\links_icons\YouTube - Original.png" />
+    <Content Include="Content\img\Projects_avatars\avatar12.jpg" />
     <Content Include="Content\img\searcherror.jpg" />
     <Content Include="Content\img\title.jpg" />
     <Content Include="Content\js\Links.js" />
@@ -533,6 +540,7 @@
     <Content Include="Views\Home\AllProjects.cshtml" />
     <Content Include="Views\Home\ProjectPage.cshtml" />
     <Content Include="Views\Home\EditProjectPage.cshtml" />
+    <Content Include="Views\Home\CodeConfirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -546,9 +554,7 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\img\Projects_avatars\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

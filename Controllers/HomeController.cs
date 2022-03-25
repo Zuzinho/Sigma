@@ -9,6 +9,8 @@ using System.Web;
 
 namespace Sigma.Controllers
 {
+    [Route("api/[controller]")]
+    [Microsoft.AspNetCore.Mvc.ApiController]
     public class HomeController : Controller
     {
         public static int user_id = 0;
@@ -18,16 +20,20 @@ namespace Sigma.Controllers
         private static User item_profile = new User(); 
         private static List<Project> user_projects = new List<Project>();
         private static List<Project> item_projects = new List<Project>();
+        private static Form form;
         private static Database1Entities db = new Database1Entities();
         private static List<Link> user_links = new List<Link>();
-        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma\\Content\\img";
+        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma";
+        private static string _Code;
+        Mail mail = new Mail();
+
         public ActionResult Index(string order, int page = 1)
         {
             ViewData["order"] = order;
             var ordquery = from x in db.Projects select x;
             List<User> users_list = new List<User>();
             List<Project> projects_list = new List<Project>();
-            if (!String.IsNullOrEmpty(order))
+            if (!string.IsNullOrEmpty(order))
             {
                 order = order.Trim().ToLower();
                 ordquery = ordquery.Where(x => x.user_name.ToLower().Contains(order) || x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order));
@@ -66,6 +72,10 @@ namespace Sigma.Controllers
                 }
                 if (count > 0)
                 {
+                    if(page > count)
+                    {
+                        return Content("<h1>Страница не найдена</h1>");
+                    }
                     List<List<int>> pages_list = Paginations.paginations_list(count);
                     List<int> pages = pages_list[page - 1];
                     pages.Add(page);
@@ -98,11 +108,24 @@ namespace Sigma.Controllers
                 {
                     count++;
                 }
-                List<List<int>> pages_list = Paginations.paginations_list(count);
-                List<int> pages = pages_list[page - 1];
-                pages.Add(page);
-                var view = (projects, users, pages);
-                return View(view);
+                if (count > 0)
+                {
+                    if (page > count)
+                    {
+                        return Content("<h1>Страница не найдена</h1>");
+                    }
+                    List<List<int>> pages_list = Paginations.paginations_list(count);
+                    List<int> pages = pages_list[page - 1];
+                    pages.Add(page);
+                    var view = (projects, users, pages);
+                    return View(view);
+                }
+                else
+                {
+                    List<int> pages = new List<int> { 0 };
+                    var view = (projects, users, pages);
+                    return View(view);
+                }
             }
         }
         public ActionResult UserPage(int item_id = -1)
@@ -120,13 +143,13 @@ namespace Sigma.Controllers
             {
                 var user = db.Users.FirstOrDefault(x => x.Id == item_id);
                 var projects = db.Projects.Where(x => x.user_id == item_id).ToList();
-                item_profile = user;
-                item_projects = projects;
-                var links = db.Links.Where(x => x.user_id == item_id).ToList();
                 if (user == null)
                 {
                     return Content("<h1>Страница не найдена</h1>");
                 }
+                item_profile = user;
+                item_projects = projects;
+                var links = db.Links.Where(x => x.user_id == item_id).ToList();
                 var view = (projects, user, is_owner, links);
                 return View(view);
             }
@@ -144,50 +167,25 @@ namespace Sigma.Controllers
         [HttpPost]
         public ActionResult Sign_up(string email, string password)
         {
-            if (email.Trim().Length > 0 && password.Trim().Length > 0)
+            email = email.Trim();
+            password = password.Trim();
+            var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
+            if (user == null)
             {
-                email = email.Trim();
-                password = email.Trim();
-                var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
-                if (user == null)
+                form = new Form
                 {
-                    Form form = new Form
-                    {
-                        Email = email.Trim(),
-                        Password = password.Trim()
-                    };
-                    if (db.Forms.Count() > 0)
-                    {
-                        form.Id = db.Forms.AsEnumerable().Last().Id + 1;
-                    }
-                    else
-                    {
-                        form.Id = 1;
-                    }
-                    user_id = form.Id;
-                    User user1 = new User
-                    {
-                        Name = "Jane Keptton",
-                        avatarUrl = "/Content/img/avatars/avatar0.jpg",
-                        position = "Senior web enginer",
-                        Id = user_id
-                    };
-                    db.Users.Add(user1);
-                    user_profile = user1;
-                    db.Forms.Add(form);
-                    db.SaveChanges();
-                    return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-                }
-
-                else
-                {
-                    return RedirectToAction("Sign_up", "Home");//Почта уже используется
-                }
+                    Email = email.Trim(),
+                    Password = password.Trim()
+                };
+                _Code = Generator.GenerateCode();
+                mail.SendMessage("nik.zozulya.04@mail.ru", _Code);
+                return RedirectToAction("CodeConfirmation","Home",new {email = email,password = password});
             }
             else
             {
                 return RedirectToAction("Sign_up", "Home");//Почта уже используется
             }
+
         }
 
         [HttpGet]
@@ -245,6 +243,10 @@ namespace Sigma.Controllers
         public ActionResult DeleteProfile()
         {
             db.Entry(user_profile).State = EntityState.Deleted;
+            if (!user_profile.avatarUrl.Contains("avatar0.jpg"))
+            {
+                System.IO.File.Delete(fullPath + user_profile.avatarUrl);
+            }
             foreach (var project in user_projects)
             {
                 db.Entry(project).State = EntityState.Deleted;
@@ -266,7 +268,7 @@ namespace Sigma.Controllers
         public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string User_position, string UserAbout)
         {
             var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
-            string path = fullPath + "\\avatars";
+            string path = fullPath + "\\Content\\img\\avatars";
             if (UserAvatar != null)
             {
                 string UserAvatarName = "avatar" + user_profile.Id.ToString() + ".jpg";
@@ -318,7 +320,7 @@ namespace Sigma.Controllers
             }
             if (AvatarUrl != null)
             {
-                string path = fullPath + "\\Projects_avatars";
+                string path = fullPath + "\\Content\\img\\Projects_avatars";
                 string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
@@ -329,24 +331,46 @@ namespace Sigma.Controllers
             }
             db.Projects.Add(project);
             user_projects.Add(project);
-            item_projects.Add(project);
             db.SaveChanges();
             return RedirectToAction("UserPage", "Home", new { item_id = user_id });
         }
 
-        public ActionResult AllProjects(string order, int page = 1, int item_id=0)
+        public ActionResult AllProjects(string order, int page = 1, int item_id = 0)
         {
             User user = new User();
             List<Project> projects = new List<Project>();
-            if (user_id == item_id)
+            user = item_profile;
+            projects = item_projects;
+            if (user != null)
             {
-                user = user_profile;
-                projects = user_projects;
+                if (user.Id != item_id)
+                {
+                    user = db.Users.FirstOrDefault(x => x.Id == item_id);
+                    item_profile = user;
+                    if (user == null)
+                    {
+                        return Content("<h1>Страница не найдена</h1>");
+                    }
+                    else
+                    {
+                        projects = db.Projects.Where(x => x.user_id == item_id).ToList();
+                        item_projects = projects;
+                    }
+                }
             }
             else
             {
-                user = item_profile;
-                projects = item_projects;
+                user = db.Users.FirstOrDefault(x => x.Id == item_id);
+                if (user == null)
+                {
+                    return Content("<h1>Страница не найдена</h1>");
+                }
+                else
+                {
+                    projects = db.Projects.Where(x => x.user_id == item_id).ToList();
+                    item_profile = user;
+                    item_projects = projects;
+                }
             }
             ViewData["order"] = order;
             if (String.IsNullOrEmpty(order))
@@ -361,13 +385,17 @@ namespace Sigma.Controllers
                     projects_list_.Add(projects[i]);
                 }
                 int count = 0;
-                count = projects.Count() / projectSize;
-                if (projects.Count() % projectSize > 0)
+                count = projects_list_.Count() / projectSize;
+                if (projects_list_.Count() % projectSize > 0)
                 {
                     count++;
                 }
                 if (count > 0)
                 {
+                    if (page > count)
+                    {
+                        return Content("<h1>Страница не найдена</h1>");
+                    }
                     List<List<int>> pages_list = Paginations.paginations_list(count);
                     List<int> pages = pages_list[page - 1];
                     pages.Add(page);
@@ -385,7 +413,7 @@ namespace Sigma.Controllers
             {
                 order = order.Trim().ToLower();
                 List<Project> projects_list_ = new List<Project>();
-                var user_projects_ = projects.Where(x => x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order)).ToList();
+                var user_projects_ = projects.Where(x => x.Title.ToLower().Contains(order) || (x.technology.ToLower().Contains(order) && order!=",")).ToList();
                 for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
                 {
                     if (i >= user_projects_.Count)
@@ -395,13 +423,17 @@ namespace Sigma.Controllers
                     projects_list_.Add(user_projects_[i]);
                 }
                 int count = 0;
-                count = user_projects_.Count() / projectSize;
-                if (user_projects_.Count() % projectSize > 0)
+                count = projects_list_.Count() / projectSize;
+                if (projects_list_.Count() % projectSize > 0)
                 {
                     count++;
                 }
                 if (count > 0)
                 {
+                    if (page > count)
+                    {
+                        return Content("<h1>Страница не найдена</h1>");
+                    }
                     List<List<int>> pages_list = Paginations.paginations_list(count);
                     List<int> pages = pages_list[page - 1];
                     pages.Add(page);
@@ -422,27 +454,25 @@ namespace Sigma.Controllers
             Project project = item_projects.FirstOrDefault(x => x.Id == item_id);
             if(project == null)
             {
-                return Content("<h1>Страница не найдена</h1>");
-            }
-            else
-            {
-                if (item_projects.Count >= 5) {
-                    var other_projects = Sorting.Selected_sort(item_projects).GetRange(0, 4);
-                    if (other_projects.Contains(project))
-                    {
-                        other_projects = Sorting.Selected_sort(item_projects).GetRange(0, 5);
-                        other_projects.Remove(project);
-                    }
-                    var view = (project, item_profile, other_projects, item_profile == user_profile);
-                    return View(view);
+                project = db.Projects.FirstOrDefault(x => x.Id == item_id);
+                if (project == null)
+                {
+                    return Content("<h1>Страница не найдена</h1>");
                 }
                 else
                 {
-                    var other_projects = Sorting.Selected_sort(item_projects);
-                    other_projects.Remove(project);
-                    var view = (project, item_profile, other_projects, item_profile == user_profile);
+                    User user = db.Users.FirstOrDefault(x => x.Id == project.user_id);
+                    var item_projects = db.Projects.Where(x => x.user_id == user.Id).ToList();
+                    var other_projects = Reference.GetRange(item_projects, project);
+                    var view = (project,user,other_projects,user == user_profile);
                     return View(view);
                 }
+            }
+            else
+            {
+                var other_projects = Reference.GetRange(item_projects, project);
+                var view = (project,item_profile,other_projects , item_profile == user_profile);
+                return View(view);
             }
         }
         [HttpGet]
@@ -462,7 +492,7 @@ namespace Sigma.Controllers
             var project = db.Projects.FirstOrDefault(x => x.Id == item_id);
             if (AvatarUrl != null)
             {
-                string path = fullPath + "\\Projects_avatars";
+                string path = fullPath + "\\Content\\img\\Projects_avatars";
                 string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
@@ -470,17 +500,6 @@ namespace Sigma.Controllers
             project.Title = Name;
             project.technology = Technos;
             project.About = ProjectAbout;
-            foreach(var proj in item_projects)
-            {
-                if(proj.Id == item_id)
-                {
-                    proj.Title = Name;
-                    proj.technology = Technos;
-                    proj.About = ProjectAbout;
-                    proj.PhotoUrl = project.PhotoUrl;
-                    break;
-                }
-            }
             foreach (var proj in user_projects)
             {
                 if (proj.Id == item_id)
@@ -499,12 +518,52 @@ namespace Sigma.Controllers
         public ActionResult DeleteProject(int item_id = 0)
         {
             var project = user_projects.Find(x => x.Id == item_id);
+            if (!project.PhotoUrl.Contains("title"))
+            {
+                System.IO.File.Delete(fullPath + project.PhotoUrl);
+            }
             db.Entry(project).State = EntityState.Deleted;
-            item_projects.Remove(project);
             user_projects.Remove(project);
             db.SaveChanges();
             return RedirectToAction("UserPage", "Home", new { item_id  = user_id });
         }
+
+        [HttpGet]
+        public ActionResult CodeConfirmation(string email,string password) {
+            var view = (email,password);
+            return View(view);
+        }
+
+        [HttpPost]
+        public ActionResult CodeConfirmation(string code) 
+        {
+            if (code == _Code)
+            {
+                if (db.Forms.Count() > 0)
+                {
+                    form.Id = db.Forms.AsEnumerable().Last().Id + 1;
+                }
+                else
+                {
+                    form.Id = 1;
+                }
+                user_id = form.Id;
+                User user1 = new User
+                {
+                    Name = "Jane Keptton",
+                    avatarUrl = "/Content/img/avatars/avatar0.jpg",
+                    position = "Senior web enginer",
+                    Id = user_id
+                };
+                db.Users.Add(user1);
+                user_profile = user1;
+                db.Forms.Add(form);
+                db.SaveChanges();
+                return RedirectToAction("UserPage", "Home", new { item_id = user_id });
+            }
+            return RedirectToAction("CodeConfirmation", "Home", new { email = form.Email, password = form.Password});
+        }
+
         public void DeleteLink(string id_string = "")
         {
             var id = Convert.ToInt32(id_string.Substring(4));
@@ -538,6 +597,7 @@ namespace Sigma.Controllers
             }
             db.SaveChanges();
         }
+
         public void AddLink(string Url,string id)
         {
             Link link = Links.getLink(Url);

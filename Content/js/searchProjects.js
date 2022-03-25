@@ -5,7 +5,7 @@ function searchProjects() {
     let projects_list = document.querySelectorAll(".project__item");
     if (project_order != "") {
         projects_list.forEach(project => {
-            if (project.querySelector(".item__name").innerText.indexOf(project_order) == -1) project.classList.add("project__item-not_selected");
+            if (project.querySelector(".item__name").innerText.toLowerCase().indexOf(project_order.toLowerCase()) == -1) project.classList.add("project__item-not_selected");
             else if (project.classList.contains("project__item-not_selected")) project.classList.remove("project__item-not_selected");
         })
     }

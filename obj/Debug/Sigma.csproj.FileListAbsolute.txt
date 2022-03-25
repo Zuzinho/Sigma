@@ -344,3 +344,5 @@ C:\Users\user\Source\Repos\Sigma\bin\System.Collections.Immutable.xml
 C:\Users\user\Source\Repos\Sigma\bin\System.Diagnostics.DiagnosticSource.xml
 C:\Users\user\Source\Repos\Sigma\bin\System.Reflection.Metadata.xml
 C:\Users\user\Source\Repos\Sigma\bin\ru\EntityFramework.SqlServer.resources.dll
+C:\Users\user\source\repos\Sigma\bin\Mail.dll
+C:\Users\user\source\repos\Sigma\bin\Mail.xml

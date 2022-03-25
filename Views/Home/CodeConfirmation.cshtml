@@ -1,0 +1,23 @@
+﻿@model ValueTuple<string,string>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Code Confirmation</title>
+</head>
+<body>
+    <div>
+        <form method="post">
+            <div name="email">@Model.Item1</div>
+            <div name="password">@Model.Item2</div>
+            <input name="code" type="text" maxlength="6"/>
+            <button type="submit">Send code</button>
+        </form>
+    </div>
+</body>
+</html>

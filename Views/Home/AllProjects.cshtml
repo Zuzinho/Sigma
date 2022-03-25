@@ -36,35 +36,50 @@
         </div>
     </div>
     <div class="search__project_text">Search for <a href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})" class="user_name">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
-    <form asp-controller="Home" asp-action="AllProjects">
-        <div class="project__search">
-            <input id="ProjectSearch" class="project_selection__text" name="order" value="@ViewData["order"]" placeholder="Search for a project">
-            <div class="magglass_block">
-                <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png"></image>
+        @using (Html.BeginForm("AllProjects", "Home", FormMethod.Post))
+        {
+
+            <div class="project__search">
+                <input type="number" value="@Model.Item2.Id" name="item_id" class="none" />
+                <input id="ProjectSearch" class="project_selection__text" name="order" value="@ViewData["order"]" placeholder="Search for a project">
+                <button type="submit" class="magglass_block">
+                    <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png"></image>
+                </button>
             </div>
-        </div>
-        <div class="container">
-            <div class="projects__row">
-                @foreach (var project in Model.Item1)
-                {
-                    Markdown markdown = new Markdown();
-                    string markdown_text = markdown.Transform(project.About);
-                    var technos = project.technology.Split(',');
-                    <a href="@Url.Action("ProjectPage", "Home", new { item_id = Model.Item2.Id })" class="project__item-active">
-                        <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
-                        <div class="item__name">@project.Title</div>
-                        <div class="item__techs">
-                            @foreach (var techno in technos)
-                            {
-                                <div class="item__tech">@techno</div>
-                            }
+        if (Model.Item1.Count > 0)
+        {
+            <div class="container">
+                <div class="projects__row">
+                    @foreach (var project in Model.Item1)
+                    {
+                        Markdown markdown = new Markdown();
+                        string markdown_text = markdown.Transform(project.About);
+                        var technos = project.technology.Split(',');
+                        <a href="@Url.Action("ProjectPage", "Home", new { item_id = project.Id })" class="project__item-active">
+                            <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
+                            <div class="item__name">@project.Title</div>
+                            <div class="item__techs">
+                                @foreach (var techno in technos)
+                                {
+                                    <div class="item__tech">@techno</div>
+                                }
                             </div>
-                        <div class="item__distr">@Html.Raw(markdown_text)</div>
-                    </a>
-                }
+                            <div class="item__distr">@Html.Raw(markdown_text)</div>
+                        </a>
+                    }
+                </div>
             </div>
-        </div>
-    </form>
+        }
+        else
+        {
+            <div>
+                <img src="~/Content/img/searcherror.jpg" alt="" class="error_image">
+            </div>
+            <div>
+                <p class="error_text">What a crap! Nothing was found :(</p>
+            </div>
+        }
+        }
     <div class="page_turner">
         <div class="page_turner__row pages">
             <div class="pages__arrow_left"></div>

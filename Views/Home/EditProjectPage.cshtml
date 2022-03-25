@@ -29,54 +29,42 @@
             </div>
             <div class="header__links">
                 <a href="@Url.Action("MyPortfolio","Home")" class="my_portfolio">My portfolio</a>
-                <div class="actions_dropdown">
-                    <div class="actions">Actions</div>
-                    <div class="actions_content">
-                        <a href="@Url.Action("EditUserPage","Home")">
-                            <div class="edit">Edit my profile</div>
-                        </a>
-                        <a href="@Url.Action("AddProject","Home")">
-                            <div class="add_project">Add project</div>
-                        </a>
-                        <a href="@Url.Action("DeleteProfile" , "Home")">
-                            <div class="delete">Delete profile</div>
-                        </a>
-                    </div>
-                </div>
                 <a href="@Url.Action("About","Home")" class="about">About</a>
             </div>
         </div>
     </div>
-    <form asp-controller="Home" asp-action="AddProject" method="post">
-        <div class="flex_container">
-            <div class="container">
-                <div class="project_input__row">
-                    <div class="add_project_title__row">
-                        <img src="@Model.Item2[0]" alt="" class="title_avatar">
-                        <div class="title_text">Add project</div>
+        @using (Html.BeginForm("EditProjectPage", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="number" name="item_id" value="@Model.Item1.Id" class="none"/>
+            <div class="flex_container">
+                <div class="container">
+                    <div class="project_input__row">
+                        <div class="add_project_title__row">
+                            <img src="@Model.Item2[0]" alt="" class="title_avatar">
+                            <div class="title_text">Add project</div>
+                        </div>
+                        <input type="text" name="Name" class="input" placeholder="Project name" value="@Model.Item1.Title" required>
+                        <input type="text" name="Technos" class="input" placeholder="Technologies" value="@Model.Item1.technology" required>
+
+                        <div class="input_info">Write technologies that you have used in that project, separating them with a comma </div>
                     </div>
-                    <input type="text" name="Name" class="input" placeholder="Project name" value="@Model.Item1.Title" required>
-                    <input type="text" name="Technos" class="input" placeholder="Technologies" value="@Model.Item1.technology" required>
+                    <div class="row__type">
+                        <a href="#editorForm" class="editor-tabs__item">Editor</a>
+                        <a href="#editorPreview" class="editor-tabs__item">Preview</a>
+                    </div>
+                    <textarea id="editorForm" placeholder="Project description"
+                              class="markdown__text_input" name="ProjectAbout">@Model.Item1.About</textarea>
+                    <div id="editorPreview" class="editor-content__item"></div>
+                    <label for="input_file" class="input input_file">
+                        <input id="input_file" type="file" name="AvatarUrl">
+                        <span class="input_file_text">Download project preview</span>
+                    </label>
 
-                    <div class="input_info">Write technologies that you have used in that project, separating them with a comma </div>
+                    <button type="submit" class="button input">Continue</button>
                 </div>
-                <div class="row__type">
-                    <a href="#editorForm" class="editor-tabs__item">Editor</a>
-                    <a href="#editorPreview" class="editor-tabs__item">Preview</a>
-                </div>
-                <textarea id="editorForm" placeholder="Project description"
-                          class="markdown__text_input" name="ProjectAbout">@Model.Item1.About</textarea>
-                <div id="editorPreview" class="editor-content__item"></div>
-                <label for="input_file" class="input input_file">
-                    <input id="input_file" type="file" name="AvatarUrl">
-                    <span class="input_file_text">Download project preview</span>
-                </label>
-
-                <button type="submit" class="button input">Continue</button>
+                <img src="~/Content/img/about4.png" alt="">
             </div>
-            <img src="~/Content/img/about4.png" alt="">
-        </div>
-    </form>
+        }
     <div class="footer">
         Sigma 2021
     </div>

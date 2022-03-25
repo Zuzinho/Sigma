@@ -171,6 +171,7 @@ body{
 	padding: 8px 12px;
 }
 .magglass_block{
+	background:#fff;
 	display:inline-block;
 }
 .magglass_block:active{
@@ -226,6 +227,28 @@ body{
 	max-height: 48px;
 	overflow: hidden;
 }
+
+.error_image {
+	display: block;
+	filter: grayscale(100%);
+	height: 290px;
+	width: 500px;
+	margin: 0 auto;
+	margin-top:40px;
+	box-shadow: 12px 12px #000000;
+}
+
+.error_text {
+	margin: 20px auto;
+	width: 398px;
+	height: 33px;
+	font-weight: 600;
+	font-size: 24px;
+	line-height: 33px;
+	text-align: center;
+	color: #777777;
+}
+
 
 .page_turner {
 	margin: 0 200px 0 0;
@@ -313,4 +336,8 @@ body{
     font-size: 16px;
     line-height: 22px;
     padding: 24px 0 0 0;
+}
+
+.none{
+	display:none;
 }

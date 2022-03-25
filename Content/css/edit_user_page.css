@@ -344,16 +344,17 @@ body{
 	margin: 0 0 24px 0;
 	position:relative;
 }
+
 .project__item .selected_star {
-		position: absolute;
-		top: 18px;
-		right: 18px;
-		display: inline-block;
-		width: 28px;
-		height: 28px;
-		background: url("/Content/img/icons/Star.png") center;
-		background-size:cover;
-	}
+	position: absolute;
+	top: 18px;
+	right: 18px;
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	background: url("/Content/img/icons/Star.png") center;
+	background-size: cover;
+}
 
 .project__item-active .selected_star {
 	position:absolute;
@@ -392,6 +393,9 @@ body{
 	font-size: 12px;
 	line-height: 16px;
 	background-color: rgba(102, 37, 212, 0.15);
+}
+.project__item-not_selected {
+	display: none;
 }
 .item__distr {
 	font-size: 16px;
