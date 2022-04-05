@@ -439,6 +439,7 @@
     <Content Include="Content\css\all_projects.css" />
     <Content Include="Content\css\edit_user_page.css" />
     <Content Include="Content\css\project_page.css" />
+    <Content Include="Content\css\code_confirmation.css" />
     <Content Include="Content\css\sign_in.css" />
     <Content Include="Content\css\sign_up.css" />
     <Content Include="Content\css\style.css" />

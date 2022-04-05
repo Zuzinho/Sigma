@@ -25,21 +25,19 @@ namespace Sigma.Controllers
         private static List<Link> user_links = new List<Link>();
         private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma";
         private static string _Code;
-        Mail mail = new Mail();
+        private Mail mail = new Mail();
 
         public ActionResult Index(string order, int page = 1)
         {
             ViewData["order"] = order;
-            var ordquery = from x in db.Projects select x;
             List<User> users_list = new List<User>();
             List<Project> projects_list = new List<Project>();
             if (!string.IsNullOrEmpty(order))
             {
                 order = order.Trim().ToLower();
-                ordquery = ordquery.Where(x => x.user_name.ToLower().Contains(order) || x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order));
-                foreach (var item in ordquery)
+                List<Project> ordquery = db.Projects.Where(x => x.user_name.ToLower().Contains(order) || x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order)).ToList();
+                foreach (var item in ordquery)//Distribute found lines to user's name and to project's name or technology
                 {
-                    var projects = ordquery.Where(x => x.technology.ToLower().Contains(order) || x.Title.ToLower().Contains(order));
                     projects_list.Add(item);
                     var user = db.Users.FirstOrDefault(x => x.Id == item.user_id);
                     if (!users_list.Contains(user))
@@ -48,21 +46,21 @@ namespace Sigma.Controllers
                     }
                 }
                 var users = db.Users.Where(x => x.Name.ToLower().Contains(order));
-                foreach (var user in users)
+                foreach (var user in users)//Find lines by users' name 
                 {
                     if (!users_list.Contains(user))
                     {
                         users_list.Add(user);
                     }
                 }
-                List<User> users_list_ = new List<User>();
+                List<User> this_page_users_list = new List<User>();
                 for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
                 {
                     if (i >= users_list.Count)
                     {
                         break;
                     }
-                    users_list_.Add(users_list[i]);
+                    this_page_users_list.Add(users_list[i]);
                 }
                 int count = 0;
                 count = users_list.Count() / pageSize;
@@ -79,19 +77,19 @@ namespace Sigma.Controllers
                     List<List<int>> pages_list = Paginations.paginations_list(count);
                     List<int> pages = pages_list[page - 1];
                     pages.Add(page);
-                    var view = (projects_list, users_list_, pages);
+                    var view = (projects_list, this_page_users_list, pages);
                     return View(view);
                 }
                 else
                 {
                     List<int> pages = new List<int>() { 0 };
-                    var view = (projects_list, users_list_, pages);
+                    var view = (projects_list, this_page_users_list, pages);
                     return View(view);
                 }
             }
             else
             {
-                var projects = ordquery.ToList();
+                var projects = db.Projects.ToList();
                 var user = db.Users.ToList();
                 List<User> users = new List<User>();
                 for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
@@ -174,12 +172,12 @@ namespace Sigma.Controllers
             {
                 form = new Form
                 {
-                    Email = email.Trim(),
-                    Password = password.Trim()
+                    Email = email,
+                    Password = password
                 };
                 _Code = Generator.GenerateCode();
-                mail.SendMessage("nik.zozulya.04@mail.ru", _Code);
-                return RedirectToAction("CodeConfirmation","Home",new {email = email,password = password});
+                mail.SendMessage(email, _Code);
+                return RedirectToAction("CodeConfirmation","Home",new {email = email});
             }
             else
             {
@@ -197,25 +195,18 @@ namespace Sigma.Controllers
         [HttpPost]
         public ActionResult Sign_in(string email, string password)
         {
-            if (email.Trim().Length > 0 && password.Trim().Length > 0)
+            email = email.Trim();
+            password = password.Trim();
+            var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
+            if (user != null)
             {
-                email = email.Trim();
-                password = email.Trim();
-                var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
-                if (user != null)
+                if (user.Password.Trim() == password)
                 {
-                    if (user.Password.Trim() == password)
-                    {
-                        user_id = user.Id;
-                        user_profile = db.Users.FirstOrDefault(x => x.Id == user_id);
-                        user_projects = db.Projects.Where(x => x.user_id == user_id).ToList();
-                        user_links = db.Links.Where(x => x.user_id == user_id).ToList();
-                        return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-                    }
-                    else
-                    {
-                        return RedirectToAction("Sign_in", "Home");//неправильный логин или пароль
-                    }
+                    user_id = user.Id;
+                    user_profile = db.Users.FirstOrDefault(x => x.Id == user_id);
+                    user_projects = db.Projects.Where(x => x.user_id == user_id).ToList();
+                    user_links = db.Links.Where(x => x.user_id == user_id).ToList();
+                    return RedirectToAction("UserPage", "Home", new { item_id = user_id });
                 }
                 else
                 {
@@ -412,7 +403,7 @@ namespace Sigma.Controllers
             else
             {
                 order = order.Trim().ToLower();
-                List<Project> projects_list_ = new List<Project>();
+                List<Project> this_page_projects_list = new List<Project>();
                 var user_projects_ = projects.Where(x => x.Title.ToLower().Contains(order) || (x.technology.ToLower().Contains(order) && order!=",")).ToList();
                 for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
                 {
@@ -420,11 +411,11 @@ namespace Sigma.Controllers
                     {
                         break;
                     }
-                    projects_list_.Add(user_projects_[i]);
+                    this_page_projects_list.Add(user_projects_[i]);
                 }
                 int count = 0;
-                count = projects_list_.Count() / projectSize;
-                if (projects_list_.Count() % projectSize > 0)
+                count = this_page_projects_list.Count() / projectSize;
+                if (this_page_projects_list.Count() % projectSize > 0)
                 {
                     count++;
                 }
@@ -437,13 +428,13 @@ namespace Sigma.Controllers
                     List<List<int>> pages_list = Paginations.paginations_list(count);
                     List<int> pages = pages_list[page - 1];
                     pages.Add(page);
-                    var view = (projects_list_, user, pages);
+                    var view = (this_page_projects_list, user, pages);
                     return View(view);
                 }
                 else
                 {
                     List<int> pages = new List<int> { 0 };
-                    var view = (projects_list_, user, pages);
+                    var view = (this_page_projects_list, user, pages);
                     return View(view);
                 }
             }
@@ -529,8 +520,8 @@ namespace Sigma.Controllers
         }
 
         [HttpGet]
-        public ActionResult CodeConfirmation(string email,string password) {
-            var view = (email,password);
+        public ActionResult CodeConfirmation(string email,string password = "") {
+            List<string> view = new List<string>{email};
             return View(view);
         }
 
@@ -561,7 +552,7 @@ namespace Sigma.Controllers
                 db.SaveChanges();
                 return RedirectToAction("UserPage", "Home", new { item_id = user_id });
             }
-            return RedirectToAction("CodeConfirmation", "Home", new { email = form.Email, password = form.Password});
+            return RedirectToAction("CodeConfirmation", "Home", new {email = form.Email});
         }
 
         public void DeleteLink(string id_string = "")

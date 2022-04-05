@@ -95,7 +95,7 @@
             <div class="search__project_text">Select your brightest projects</div>
             <div class="project__search">
                 <input id="ProjectSearch" class="project_selection__text" name="project_order" placeholder="Search for a project">
-                <div class="magglass_block">
+                <div  class="magglass_block">
                     <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png" onclick="searchProjects()"></image>
                 </div>
             </div>
@@ -122,9 +122,9 @@
                         </div>
                     }
                 }
-                @if(Model.Item1.Count % 3 == 2)
+                @if (Model.Item1.Count % 3 == 2)
                 {
-                <div class="project__item" hidden></div>
+                    <div class="project__item" hidden></div>
                 }
             </div>
         </div>
@@ -137,7 +137,7 @@
         </div>
     }
     <div class="footer">
-        Sigma 2021
+        Sigma 2022
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
