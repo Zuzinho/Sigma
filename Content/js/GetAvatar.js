@@ -8,10 +8,4 @@ function GetAvatar(e) {
     reader.onload = function () {
         image.src = reader.result;
     }
-    //var formData = new FormData();
-    //formData.append("UserAvatar", file);
-    //for (var [key, value] of formData.entries()) {
-    //    console.log(key, value);
-    //}
-//    axios.post("/Home/AddAvatar", formData);
 }

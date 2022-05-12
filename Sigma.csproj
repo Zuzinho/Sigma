@@ -438,6 +438,7 @@
     <Content Include="Content\css\add_project.css" />
     <Content Include="Content\css\all_projects.css" />
     <Content Include="Content\css\edit_user_page.css" />
+    <Content Include="Content\css\password_recover.css" />
     <Content Include="Content\css\project_page.css" />
     <Content Include="Content\css\code_confirmation.css" />
     <Content Include="Content\css\sign_in.css" />
@@ -542,6 +543,7 @@
     <Content Include="Views\Home\ProjectPage.cshtml" />
     <Content Include="Views\Home\EditProjectPage.cshtml" />
     <Content Include="Views\Home\CodeConfirmation.cshtml" />
+    <Content Include="Views\Home\PasswordRecover.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

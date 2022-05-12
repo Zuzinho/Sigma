@@ -250,6 +250,9 @@ body {
 }
 
 .title_name {
+    overflow:hidden;
+    text-overflow:ellipsis;
+    max-width:190px;
     color: #000000;
     font-weight: bold;
     font-size: 25px;
@@ -259,9 +262,12 @@ body {
 }
 
 .title_main_skill {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 190px; 
     margin: 5px 0 0 16px;
     font-size: 17px;
-    line-height: 19px;
+    line-height: 26px;
     color: #777777;
 }
 

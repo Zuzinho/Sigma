@@ -115,8 +115,8 @@ body{
 .actions_dropdown:hover .actions_content {
 	display: flex;
 	flex-direction: column;
-	width: 141px;
-	height: 138px;
+	width: 140px;
+	height: 182px;
 	border: 1px solid #000000;
 	box-shadow: 8px 8px 0px #000000;
 	border-radius: 4px;
@@ -138,16 +138,18 @@ body{
 }
 .add_project {
 	color: #6625D4;
+	border-top: 1px solid #000000;
+	border-bottom: 1px solid #000000;
+}
+.exit_profile {
+	color: #6625D4;
+	border-bottom: 1px solid #000000;
 }
 .delete {
 	color: #E92323;
 }
 .actions_content div:hover {
 	background-color: #ddd;
-}
-.add_project {
-	border-top: 1px solid #000000;
-	border-bottom: 1px solid #000000;
 }
 .about {
 	color: #000000;
