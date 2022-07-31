@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, List<Sigma.Models.User>, List<int>>
+﻿@model ValueTuple<List<List<Sigma.Models.Project>>, List<Sigma.Models.User>, List<int>,string>
 @using Sigma;
 @{
     Layout = "//Views//MasterViewIndex.cshtml";
@@ -9,38 +9,33 @@
     @if (Model.Item2.Count > 0)
     {
 <div class="portfolios__row">
-    @foreach (var user in Model.Item2)
+    @for (int i=0;i<Model.Item2.Count;i++)
     {
-        int count = 0;
-        var user_projects = Model.Item1.Where(x => x.user_id == user.Id).ToList();
-        var sorted_user_user_projects = Sorting.Selected_sort(user_projects);
+        var user = Model.Item2[i];
+        var sortedUserProjects = Sorting.Selected_sort(Model.Item1[i]);
 
-        <a class="user_page" href="@Url.Action("UserPage", "Home", new { item_id = user.Id })">
+        <a class="user_page" href="@Url.Action("UserPage", "Home", new { userId = user.Id })">
             <div class="portfolios__item item">
                 <div class="item__row">
                     <div class="item__title">
-                        <img src="@user.avatarUrl" alt="" class="title__image">
+                        <img src="@user.AvatarUrl" alt="" class="title__image">
                         <div class="item__info">
                             <p class="title_name">@user.Name</p>
-                            <p class="title_main_skill">@user.position</p>
+                            <p class="title_main_skill">@user.Position</p>
                         </div>
                         <div class="item__skills">
 
 
-                            @foreach (var project in sorted_user_user_projects)
+                            @for (int j = 0; j < Math.Min(sortedUserProjects.Count, 3);j++)
                             {
+                                var project = sortedUserProjects[j];
                                 <div class="item__skill skill">
                                     <div class="skill__info">@project.Title</div>
-                                    @if (project.technology != "")
+                                    @if (project.Technology != "")
                                     {
-                                        <div class="skill__name"><p>@project.technology.Split(',')[0]</p></div>
+                                        <div class="skill__name"><p>@project.Technology.Split(',')[0]</p></div>
                                     }
                                 </div>
-                                count++;
-                                if (count == 3)
-                                {
-                                    break;
-                                }
                             }
                         </div>
                     </div>
@@ -76,14 +71,14 @@
                 Model.Item3.RemoveAt(Model.Item3.Count - 1);
                 if (current_page > 1)
                 {
-                    <a href="@Url.Action("index", "Home", new { order = ViewData["order"],page = current_page - 1 })" class="previous_page"></a>
+                    <a href="@Url.Action("index", "Home", new { order = @Model.Item4,page = current_page - 1 })" class="previous_page"></a>
                 }
                 <div class="pages_list">
                     @foreach (int page in Model.Item3)
                     {
                         if (page != current_page && page > 0)
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="page_value">@page</a>
                         }
                         else if (page == 0)
                         {
@@ -91,17 +86,17 @@
                         }
                         else if (page == Model.Item3.Max())
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="current_last_page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="current_last_page_value">@page</a>
                         }
                         else
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = page })" class="current_page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="current_page_value">@page</a>
                         }
                     }
                 </div>
                 if (current_page < Model.Item3.Max())
                 {
-                    <a href="@Url.Action("Index", "Home", new { order = ViewData["order"], page = current_page + 1 })" class="next_page"></a>
+                    <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = current_page + 1 })" class="next_page"></a>
                 }
             }
         </div>

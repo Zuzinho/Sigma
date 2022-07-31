@@ -1,0 +1,7 @@
+﻿CREATE TYPE [User] AS TABLE(
+	Id INT NOT NULL,
+	Name NVARCHAR(MAX),
+	avatar NVARCHAR(MAX),
+	RoomNumvers NVARCHAR(MAX),
+	PRIMARY KEY (Id)
+);

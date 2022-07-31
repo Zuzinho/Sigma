@@ -7,12 +7,12 @@
 <div class="header">
     <div class="header__row">
         <div class="header__title">
-            <a href="@Url.Action("Index","Home",new {page = 1})">
+            <a href="@Url.Action("Index","Home")">
                 <div class="header__logo">
                     <span>σ</span>
                 </div>
             </a>
-            <a href="@Url.Action("Index","Home",new {page = 1})">
+            <a href="@Url.Action("Index","Home")">
                 <div class="header__info">
                     <div class="header__name">Sigma</div>
                     <div class="header__tagname">Where your portfolio starts</div>
@@ -56,19 +56,19 @@
     <div class="user_info__row">
         <div class="user_title">
             <div class="user_image">
-                <image class="image" src="@Model.Item2.avatarUrl" alt=""></image>
+                <image class="image" src="@Model.Item2.AvatarUrl" alt=""></image>
             </div>
             <div class="user_info">
                 <div class="user_name">@Model.Item2.Name</div>
-                <div class="user_position">@Model.Item2.position</div>
+                <div class="user_position">@Model.Item2.Position</div>
             </div>
         </div>
         <div class="user_links">
             @foreach (var link in Model.Item4)
                 {
-                <a href="@link.Link1" target="_blanc">
+                <a href="@link.Url" target="_blanc">
                     <div class="user_link_border">
-                        <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
+                        <image class="user_link_image" src="@link.ProviderAvatarUrl" alt=""></image>
                     </div>
                 </a>
                 }
@@ -80,7 +80,7 @@
         @if (true)
         {
             Markdown markdown = new Markdown();
-            string markdown_text = markdown.Transform(Model.Item2.about);
+            string markdown_text = markdown.Transform(Model.Item2.About);
             <div class="markdown__text">@Html.Raw(markdown_text)</div>
         }
     </div>
@@ -97,8 +97,8 @@
                 {
                     Markdown markdown = new Markdown();
                     string markdown_text = markdown.Transform(project.About);
-                    var technos = project.technology.Split(',');
-                    <a href="@Url.Action("ProjectPage", "Home", new { item_id = project.Id })" class="project__item-active">
+                    var technos = project.Technology.Split(',');
+                    <a href="@Url.Action("ProjectPage", "Home", new { projectId = project.Id, userId = Model.Item2.Id })" class="project__item-active">
                         <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                         <div class="item__name">@project.Title</div>
                         <div class="item__techs">
@@ -118,7 +118,7 @@
 {
     <div class="all_projects_block">
         <div class="container">
-            <a href="@Url.Action("AllProjects","Home",new {page = 1,item_id = Model.Item2.Id})" class="all_projects">
+            <a href="@Url.Action("AllProjects","Home",new {userId = Model.Item2.Id})" class="all_projects">
                 See all
             </a>
         </div>

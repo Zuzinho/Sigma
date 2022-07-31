@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>,Sigma.Models.User,List<int>>
+﻿@model ValueTuple<List<Sigma.Models.Project>,Sigma.Models.User,List<int>,string>
     @using MarkdownSharp;
 @{
     Layout = null;
@@ -17,12 +17,12 @@
     <div class="header">
         <div class="header__row">
             <div class="header__title">
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__logo">
                         <span>σ</span>
                     </div>
                 </a>
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__info">
                         <div class="header__name">Sigma</div>
                         <div class="header__tagname">Where your portfolio starts</div>
@@ -37,11 +37,11 @@
     </div>
     <div class="search__project_text">Search for <a href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})" class="user_name">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
         @using (Html.BeginForm("AllProjects", "Home", FormMethod.Post))
-        {
-
+                    {
+            <input class="userId" name="userId" value="@Model.Item2.Id" hidden />
             <div class="project__search">
                 <input type="number" value="@Model.Item2.Id" name="item_id" class="none" />
-                <input id="ProjectSearch" class="project_selection__text" name="order" value="@ViewData["order"]" placeholder="Search for a project">
+                <input id="ProjectSearch" class="project_selection__text" name="order" value="@Model.Item4" placeholder="Search for a project">
                 <button type="submit" class="magglass_block">
                     <image class="magglass" width="20px" height="20px" src="/Content/img/icons/magnifying-glass.png"></image>
                 </button>
@@ -51,18 +51,18 @@
             <div class="container">
                 <div class="projects__row">
                     @foreach (var project in Model.Item1)
-                    {
-                        Markdown markdown = new Markdown();
-                        string markdown_text = markdown.Transform(project.About);
-                        var technos = project.technology.Split(',');
+                {
+                    Markdown markdown = new Markdown();
+                    string markdown_text = markdown.Transform(project.About);
+                    var technos = project.Technology.Split(',');
                         <a href="@Url.Action("ProjectPage", "Home", new { item_id = project.Id })" class="project__item-active">
                             <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                             <div class="item__name">@project.Title</div>
                             <div class="item__techs">
                                 @foreach (var techno in technos)
-                                {
+                {
                                     <div class="item__tech">@techno</div>
-                                }
+            }
                             </div>
                             <div class="item__distr">@Html.Raw(markdown_text)</div>
                         </a>
@@ -90,14 +90,14 @@
                     Model.Item3.RemoveAt(Model.Item3.Count - 1);
                     if (current_page > 1)
                     {
-                        <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"],page = current_page - 1 ,item_id = Model.Item2.Id})" class="previous_page"></a>
+                        <a href="@Url.Action("AllProjects", "Home", new { order = @Model.Item4,page = current_page - 1 ,userId = Model.Item2.Id})" class="previous_page"></a>
                     }
                     <div class="pages_list">
                         @foreach (int page in Model.Item3)
                         {
                             if (page != current_page && page > 0)
                             {
-                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="page_value">@page</a>
+                                <a href="@Url.Action("AllProjects", "Home", new { order = @Model.Item4, page = page ,userId = Model.Item2.Id})" class="page_value">@page</a>
                             }
                             else if (page == 0)
                             {
@@ -105,17 +105,17 @@
                             }
                             else if (page == Model.Item3.Max())
                             {
-                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="current_last_page_value">@page</a>
+                                <a href="@Url.Action("AllProjects", "Home", new { order = @Model.Item4, page = page ,userId = Model.Item2.Id})" class="current_last_page_value">@page</a>
                             }
                             else
                             {
-                                <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = page ,item_id = Model.Item2.Id})" class="current_page_value">@page</a>
+                                <a href="@Url.Action("AllProjects", "Home", new { order = @Model.Item4, page = page ,userId = Model.Item2.Id})" class="current_page_value">@page</a>
                             }
                         }
                     </div>
                     if (current_page < Model.Item3.Max())
                     {
-                        <a href="@Url.Action("AllProjects", "Home", new { order = ViewData["order"], page = current_page + 1 ,item_id = Model.Item2.Id})" class="next_page"></a>
+                        <a href="@Url.Action("AllProjects", "Home", new { order = @Model.Item4, page = current_page + 1 ,userId = Model.Item2.Id})" class="next_page"></a>
                     }
                 }
             </div>

@@ -1,48 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="Хранилище SigmaDBModelContainer" CdmEntityContainer="Database1Entities">
-    <EntitySetMapping Name="Links">
-      <EntityTypeMapping TypeName="SigmaDBModel.Link">
-        <MappingFragment StoreEntitySet="Links">
-          <ScalarProperty Name="provider_avatar" ColumnName="provider_avatar" />
+    <EntitySetMapping Name="Forms">
+      <EntityTypeMapping TypeName="SigmaDBModel.Form">
+        <MappingFragment StoreEntitySet="Forms">
+          <ScalarProperty Name="RecoverCode" ColumnName="RecoverCode" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Provider" ColumnName="Provider" />
-          <ScalarProperty Name="Link1" ColumnName="Link" />
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Projects">
-      <EntityTypeMapping TypeName="SigmaDBModel.Project">
-        <MappingFragment StoreEntitySet="Projects">
-          <ScalarProperty Name="selected" ColumnName="selected" />
-          <ScalarProperty Name="user_name" ColumnName="user_name" />
-          <ScalarProperty Name="technology" ColumnName="technology" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Title" ColumnName="Title" />
-          <ScalarProperty Name="PhotoUrl" ColumnName="PhotoUrl" />
-          <ScalarProperty Name="Link" ColumnName="Link" />
-          <ScalarProperty Name="About" ColumnName="About" />
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="Users">
       <EntityTypeMapping TypeName="SigmaDBModel.User">
         <MappingFragment StoreEntitySet="Users">
-          <ScalarProperty Name="about" ColumnName="about" />
-          <ScalarProperty Name="position" ColumnName="position" />
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="About" ColumnName="about" />
+          <ScalarProperty Name="Position" ColumnName="position" />
+          <ScalarProperty Name="AvatarUrl" ColumnName="avatarUrl" />
           <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="avatarUrl" ColumnName="avatarUrl" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Forms">
-      <EntityTypeMapping TypeName="SigmaDBModel.Form">
-        <MappingFragment StoreEntitySet="Forms">
-          <ScalarProperty Name="Password" ColumnName="Password" />
-          <ScalarProperty Name="Email" ColumnName="Email" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>

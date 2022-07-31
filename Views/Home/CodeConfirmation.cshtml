@@ -1,4 +1,4 @@
-﻿@model List<string>
+﻿@model      string[]
 @{
     Layout = null;
 }
@@ -17,12 +17,12 @@
     <div class="header">
         <div class="header__row">
             <div class="header__title">
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__logo">
                         <span>σ</span>
                     </div>
                 </a>
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__info">
                         <div class="header__name">Sigma</div>
                         <div class="header__tagname">Where your portfolio starts</div>
@@ -38,8 +38,8 @@
     <div class="container">
         <div class="sign_in">
             <h1>We have sent passcode to  <span class="email">@Model[0]</span></h1>
-            <div class="code_disc">Check your email and past here the code you got. <a class="ref_back" href="@Url.Action("Sign_up","Home")">Change email adress</a>.</div>
-            <form method="post">
+            <div class="code_disc">Check your email and past here the code you got. <a class="ref_back" href="@Url.Action("SignUp","Home")">Change email adress</a>.</div>
+            <form method="post" id="SendCodeForm">
                 <input type="text" class="password" name="code" placeholder="Write code here" required>
                 <button type="submit" id="btn1" class="button">Continue</button>
             </form>

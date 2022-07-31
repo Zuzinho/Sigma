@@ -25,9 +25,7 @@ namespace Sigma.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<Link> Links { get; set; }
-        public virtual DbSet<Project> Projects { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Form> Forms { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

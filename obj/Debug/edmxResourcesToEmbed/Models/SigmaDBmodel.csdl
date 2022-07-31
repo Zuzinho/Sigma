@@ -1,44 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="SigmaDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-  <EntityType Name="Link">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" />
-    <Property Name="Provider" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
-    <Property Name="Link1" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="user_id" Type="Int32" />
-    <Property Name="provider_avatar" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
-  </EntityType>
-  <EntityType Name="Project">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" />
-    <Property Name="Title" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="PhotoUrl" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
-    <Property Name="Link" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
-    <Property Name="About" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="user_id" Type="Int32" />
-    <Property Name="technology" Type="String" MaxLength="64" FixedLength="false" Unicode="true" />
-    <Property Name="user_name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="selected" Type="Boolean" />
-  </EntityType>
-  <EntityType Name="User">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="Int32" Nullable="false" />
-    <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="avatarUrl" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
-    <Property Name="position" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
-    <Property Name="about" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
-  </EntityType>
   <EntityContainer Name="Database1Entities" annotation:LazyLoadingEnabled="true">
-    <EntitySet Name="Links" EntityType="Self.Link" />
-    <EntitySet Name="Projects" EntityType="Self.Project" />
-    <EntitySet Name="Users" EntityType="Self.User" />
     <EntitySet Name="Forms" EntityType="SigmaDBModel.Form" />
+    <EntitySet Name="Users" EntityType="SigmaDBModel.User" />
   </EntityContainer>
   <EntityType Name="Form">
     <Key>
@@ -47,5 +11,17 @@
     <Property Name="Id" Type="Int32" Nullable="false" />
     <Property Name="Email" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
     <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="UserId" Type="Int32" />
+    <Property Name="RecoverCode" Type="Int32" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="AvatarUrl" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+    <Property Name="About" Type="String" MaxLength="1024" FixedLength="false" Unicode="true" />
   </EntityType>
 </Schema>

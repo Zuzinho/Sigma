@@ -16,12 +16,12 @@
     <div class="header">
         <div class="header__row">
             <div class="header__title">
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__logo">
                         <span>σ</span>
                     </div>
                 </a>
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__info">
                         <div class="header__name">Sigma</div>
                         <div class="header__tagname">Where your portfolio starts</div>
@@ -51,12 +51,12 @@
                     <div class="input_image__row">
                         <div class="user_image">
                             <input type="file" class="image_input" name="UserAvatar" onchange="GetAvatar(event)" accept="image/*">
-                            <img class="image" src="@Model.Item2.avatarUrl" alt="">
+                            <img class="image" src="@Model.Item2.AvatarUrl" alt="">
                         </div>
                     </div>
                     <div class="user_info">
                         <input value="@Model.Item2.Name" name="UserName" type="text" class="user_name">
-                        <input type="text" value="@Model.Item2.position" name="User_position" class="user_position">
+                        <input type="text" value="@Model.Item2.Position" name="UserPosition" class="user_position">
                     </div>
                 </div>
                 <div class="user_links">
@@ -65,7 +65,7 @@
                         {
                             string link_id = "link" + link.Id.ToString();
                             <div id="@link_id" class="user_link_border-active">
-                                <image class="user_link_image" src="@link.provider_avatar" alt=""></image>
+                                <image class="user_link_image" src="@link.ProviderAvatarUrl" alt=""></image>
                                 <div id="LinkDeleteButton" class="trash_border" onclick="deleteicon(@link_id)">
                                     <image class="trash_link" src="/Content/img/icons/Trash.png" alt=""></image>
                                 </div>
@@ -87,7 +87,7 @@
                     <a href="#editorPreview" class="editor-tabs__item">Preview</a>
                 </div>
                 <textarea id="editorForm" placeholder="Write here your markdown"
-                          class="markdown__text_input" name="UserAbout">@Model.Item2.about</textarea>
+                          class="markdown__text_input" name="UserAbout">@Model.Item2.About</textarea>
                 <div id="editorPreview" class="editor-content__item"></div>
             </div>
         </div>
@@ -103,7 +103,7 @@
                 @foreach (var project in Model.Item1)
                 {
                     string project_id = "project" + project.Id.ToString();
-                    if (Convert.ToBoolean(project.selected))
+                    if (project.Selected)
                     {
                         <div id="@project_id" class="project__item project__item-active" onclick="ChangeActive(@project_id)">
                             <div class="item__image" style="background-image:url('@project.PhotoUrl')">
@@ -129,8 +129,8 @@
             </div>
         </div>
         <div class="container">
-            <div class="all_projects">
-                <button type="submit" onclick="sendProjects()">
+            <div class="all_projects"  onclick="sendProjects()">
+                <button type="submit">
                     Save changes
                 </button>
             </div>
@@ -140,7 +140,6 @@
         Sigma 2022
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="~/Content/js/markdown.js"></script>
     <script src="~/Content/js/ChangeActive.js"></script>

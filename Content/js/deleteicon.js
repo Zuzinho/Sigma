@@ -4,7 +4,7 @@ function deleteicon(elem_id) {
         jQuery.ajax({
             type: "POST",
             url: "/Home/DeleteLink",
-            data: "id_string=" + elem_id.id
+            data: "idString=" + elem_id.id
         });
     }
 }

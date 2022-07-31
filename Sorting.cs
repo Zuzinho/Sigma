@@ -19,7 +19,7 @@ namespace Sigma
             {
                 for (int j = i + 1; j < result.Count; j++)
                 {
-                    if (Convert.ToByte(result[i].selected) < Convert.ToByte(result[j].selected))
+                    if (Convert.ToByte(result[i].Selected) < Convert.ToByte(result[j].Selected))
                     {
                         var temp = result[i];
                         result[i] = result[j];

@@ -36,13 +36,13 @@ function CreateLink(icon, num) {
 }
 
 const providers_icons = new Map([
-    ["vk.com", "/Content/img/links_icons/VK - Original.png"],
-    ["github.com", "/Content/img/links_icons/Github - Original.png"],
-    ["linkedin.com", "/Content/img/links_icons/Linkedln - Original.png"],
-    ["telegram.org", "/Content/img/links_icons/Telegram - Original.png"],
-    ["facebook.com", "/Content/img/links_icons/Facebook - Original.png"],
-    ["twitter.com", "/Content/img/links_icons/Twitter - Original.png"],
-    ["youtube.com", "/Content/img/links_icons/YouTube - Original.png"]
+    ["vk.com", "/Content/img/links_icons/vk.com.png"],
+    ["github.com", "/Content/img/links_icons/github.com.png"],
+    ["linkedin.com", "/Content/img/links_icons/linkedin.com.png"],
+    ["telegram.org", "/Content/img/links_icons/telegram.org.png"],
+    ["facebook.com", "/Content/img/links_icons/facebook.com.png"],
+    ["twitter.com", "/Content/img/links_icons/twitter.com.png"],
+    ["youtube.com", "/Content/img/links_icons/youtube.com.png"]
 ]);
 
 plus.addEventListener("click", () => {
@@ -81,14 +81,15 @@ plus.addEventListener("click", () => {
     document.getElementById("LinkAdd").value = "";
 })
 
-function deleteicon(elem) {
+function deleteicon(id) {
     if (confirm("Are you sure that you want to delete this link?")) {
-        ids.push(elem.id);
+        ids.push(id);
+        var elem = document.getElementById(id);
         elem.remove();
-        jQuery.ajax({
-            type: "POST",
-            url: "/Home/DeleteLink",
-            data: "id_string=" + elem.id
-        });
+        console.log(elem);
+        let formdata = new FormData();
+        console.log(elem.id);
+        formdata.append('id', elem.id);
+        axios.post('/Home/DeleteLink', formdata);
     }
 }

@@ -17,5 +17,7 @@ namespace Sigma.Models
         public int Id { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public Nullable<int> UserId { get; set; }
+        public Nullable<int> RecoverCode { get; set; }
     }
 }

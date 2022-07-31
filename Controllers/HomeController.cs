@@ -9,548 +9,232 @@ using System.Web;
 
 namespace Sigma.Controllers
 {
-    [Route("api/[controller]")]
-    [Microsoft.AspNetCore.Mvc.ApiController]
     public class HomeController : Controller
     {
-        public static int user_id = 0;
-        private int pageSize = 12;
-        private int projectSize = 6;
-        private static User user_profile = new User();
-        private static User item_profile = new User(); 
-        private static List<Project> user_projects = new List<Project>();
-        private static List<Project> item_projects = new List<Project>();
-        private static Form form;
-        private static Database1Entities db = new Database1Entities();
-        private static List<Link> user_links = new List<Link>();
-        private string fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma";
-        private static string _Code;
-        private Mail mail = new Mail();
+        private static int _userId = 0;
+        private static User _userProfile;
+        private static List<Project> _userProjects;
+        private static List<Link> _userLinks;
+        private static Form _userForm;
 
-        public ActionResult Index(string order, int page = 1)
+        private static Database1Entities _db;
+
+        private static readonly string _fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma";
+
+        private static Mail _mail;
+
+        public HomeController()
         {
-            ViewData["order"] = order;
-            List<User> users_list = new List<User>();
-            List<Project> projects_list = new List<Project>();
-            if (!string.IsNullOrEmpty(order))
-            {
-                order = order.Trim().ToLower();
-                List<Project> ordquery = db.Projects.Where(x => x.user_name.ToLower().Contains(order) || x.Title.ToLower().Contains(order) || x.technology.ToLower().Contains(order)).ToList();
-                foreach (var item in ordquery)//Distribute found lines to user's name and to project's name or technology
-                {
-                    projects_list.Add(item);
-                    var user = db.Users.FirstOrDefault(x => x.Id == item.user_id);
-                    if (!users_list.Contains(user))
-                    {
-                        users_list.Add(user);
-                    }
-                }
-                var users = db.Users.Where(x => x.Name.ToLower().Contains(order));
-                foreach (var user in users)//Find lines by users' name 
-                {
-                    if (!users_list.Contains(user))
-                    {
-                        users_list.Add(user);
-                    }
-                }
-                List<User> this_page_users_list = new List<User>();
-                for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
-                {
-                    if (i >= users_list.Count)
-                    {
-                        break;
-                    }
-                    this_page_users_list.Add(users_list[i]);
-                }
-                int count = 0;
-                count = users_list.Count() / pageSize;
-                if (users_list.Count() % pageSize > 0)
-                {
-                    count++;
-                }
-                if (count > 0)
-                {
-                    if(page > count)
-                    {
-                        return Content("<h1>Страница не найдена</h1>");
-                    }
-                    List<List<int>> pages_list = Paginations.paginations_list(count);
-                    List<int> pages = pages_list[page - 1];
-                    pages.Add(page);
-                    var view = (projects_list, this_page_users_list, pages);
-                    return View(view);
-                }
-                else
-                {
-                    List<int> pages = new List<int>() { 0 };
-                    var view = (projects_list, this_page_users_list, pages);
-                    return View(view);
-                }
-            }
-            else
-            {
-                var projects = db.Projects.ToList();
-                var user = db.Users.ToList();
-                List<User> users = new List<User>();
-                for (int i = (page - 1) * pageSize; i < (page) * pageSize; i++)
-                {
-                    if (i >= user.Count)
-                    {
-                        break;
-                    }
-                    users.Add(user[i]);
-                }
-                int count = 0;
-                count = user.Count / pageSize;
-                if (user.Count % pageSize > 0)
-                {
-                    count++;
-                }
-                if (count > 0)
-                {
-                    if (page > count)
-                    {
-                        return Content("<h1>Страница не найдена</h1>");
-                    }
-                    List<List<int>> pages_list = Paginations.paginations_list(count);
-                    List<int> pages = pages_list[page - 1];
-                    pages.Add(page);
-                    var view = (projects, users, pages);
-                    return View(view);
-                }
-                else
-                {
-                    List<int> pages = new List<int> { 0 };
-                    var view = (projects, users, pages);
-                    return View(view);
-                }
-            }
+            _db = new Database1Entities();
+            _mail = new Mail();
         }
-        public ActionResult UserPage(int item_id = -1)
+
+        public ActionResult Index(string order = "", int page = 1)
         {
-            bool is_owner;
-            is_owner = (item_id == user_id);
-            if (is_owner)
-            {
-                item_profile = user_profile;
-                item_projects = user_projects;
-                var view = (user_projects, user_profile, is_owner, user_links);
-                return View(view);
-            }
-            else
-            {
-                var user = db.Users.FirstOrDefault(x => x.Id == item_id);
-                var projects = db.Projects.Where(x => x.user_id == item_id).ToList();
-                if (user == null)
-                {
-                    return Content("<h1>Страница не найдена</h1>");
-                }
-                item_profile = user;
-                item_projects = projects;
-                var links = db.Links.Where(x => x.user_id == item_id).ToList();
-                var view = (projects, user, is_owner, links);
-                return View(view);
-            }
+            int pageSize = 12;
+            string filterOrder = order.ToLower().Trim();
+            List<User> users = _db.Users.Where(x => x.Name.ToLower().Contains(filterOrder)).ToList();
+            List<List<Project>> usersProjects = new List<List<Project>>();
+            List<User> usersOnPage = new List<User>();
+            for (int i = (page - 1) * pageSize; i < Math.Min(page * pageSize,users.Count); i++) usersOnPage.Add(users[i]);
+            foreach(var user in usersOnPage) usersProjects.Add(DataBase.GetProjects(user.Id));
+            int pagesCount = 1 + users.Count/(pageSize + 1);
+            if (page > pagesCount) return Content("<h1>Страница не найдена</h1>");
+            var pages = Paginations.GetPagination(pagesCount, page);
+            pages.Add(page);
+            return View((usersProjects, usersOnPage, pages,order));
+        }
+        public ActionResult UserPage(int userId)
+        {
+            bool isOwner = userId == _userId;
+            User user = isOwner ? _userProfile : _db.Users.FirstOrDefault(x=>x.Id == userId);
+            if(user == null) return Content("<h1>Страница не найдена</h1>");
+            List<Project> projects = isOwner ? _userProjects : DataBase.GetProjects(user.Id);
+            List<Link> links = isOwner ? _userLinks : DataBase.GetLinks(user.Id);
+            return View((projects,user,isOwner,links));
         }
         public ActionResult AboutPage()
         {
             return View();
         }
         [HttpGet]
-        public ActionResult Sign_up()
+        public ActionResult SignUp()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Sign_up(string email, string password)
+        public ActionResult SignUp(string email, string password)
         {
-            email = email.Trim();
-            password = password.Trim();
-            var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
-            if (user == null)
+            _userForm = _db.Forms.FirstOrDefault(x => x.Email == email);
+            if (_userForm != null) return View(); // Уже используется
+            _userForm = new Form()
             {
-                form = new Form
-                {
-                    Email = email,
-                    Password = password
-                };
-                user_profile = new User
-                {
-                    Name = "Jane Keptton",
-                    avatarUrl = "/Content/img/avatars/avatar0.jpg",
-                    position = "Senior web enginer",
-                    Id = user_id
-                };
-                _Code = Generator.GenerateCode();
-                mail.SendMessage(email, _Code);
-                return RedirectToAction("CodeConfirmation","Home",new {email = email, a = 1});
-            }
-            else
-            {
-                return RedirectToAction("Sign_up", "Home");//Почта уже используется
-            }
-
+                Email = email,
+                Password = password
+            };
+            var lastForm = _db.Forms.AsEnumerable().LastOrDefault();
+            _userForm.Id = lastForm == null ? 1 : lastForm.Id + 1;
+            var lastUser = _db.Users.AsEnumerable().LastOrDefault();
+            _userId = lastUser == null ? 1 : lastUser.Id + 1;
+            _userProfile = new User(_userId);
+            _userProjects = new List<Project>();
+            _userLinks = new List<Link>();
+            DataBase.CreateProjectsTable(_userId);
+            DataBase.CreateLinksTable(_userId);
+            _userForm.UserId = _userId;
+            _db.Forms.Add(_userForm);
+            _db.Users.Add(_userProfile);
+            _db.SaveChanges();
+            return RedirectToAction("UserPage",new {userId = _userId});
         }
 
         [HttpGet]
-        public ActionResult Sign_in()
+        public ActionResult SignIn()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Sign_in(string email, string password)
+        public ActionResult SignIn(string email, string password)
         {
             email = email.Trim();
-            password = password.Trim();
-            var user = db.Forms.FirstOrDefault(x => x.Email.Trim() == email);
-            if (user != null)
-            {
-                if (user.Password.Trim() == password)
-                {
-                    user_id = user.Id;
-                    user_profile = db.Users.FirstOrDefault(x => x.Id == user_id);
-                    user_projects = db.Projects.Where(x => x.user_id == user_id).ToList();
-                    user_links = db.Links.Where(x => x.user_id == user_id).ToList();
-                    return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-                }
-                else
-                {
-                    return RedirectToAction("Sign_in", "Home");//неправильный логин или пароль
-                }
-            }
-            else
-            {
-                return RedirectToAction("Sign_in", "Home");//неправильный логин или пароль
-            }
+            _userForm = _db.Forms.FirstOrDefault(x=>x.Email == email);
+            if (_userForm == null) return View();//Неверный логин или пароль
+            if(_userForm.Password != password) return View();//Неверный логин или пароль
+            _userId = (int)_userForm.UserId;
+            _userProfile = _db.Users.FirstOrDefault(x=>x.Id == _userId);
+            _userProjects = DataBase.GetProjects(_userId);
+            _userLinks = DataBase.GetLinks(_userId);
+            return RedirectToAction("UserPage", new { userId = _userId });
         }
 
         public ActionResult MyPortfolio()
         {
-            if (user_id > 0)
-            {
-                return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-            }
-            else
-            {
-                return RedirectToAction("Sign_in", "Home");
-            }
+            return _userId>0? RedirectToAction("UserPage", "Home", new { userId = _userId }): RedirectToAction("SignIn", "Home");
         }
 
         public ActionResult DeleteProfile()
         {
-            db.Entry(user_profile).State = EntityState.Deleted;
-            if (!user_profile.avatarUrl.Contains("avatar0.jpg"))
-            {
-                System.IO.File.Delete(fullPath + user_profile.avatarUrl);
-            }
-            foreach (var project in user_projects)
-            {
-                db.Entry(project).State = EntityState.Deleted;
-            }
-            db.Forms.Remove(db.Forms.FirstOrDefault(x => x.Id == user_id));
-            db.Links.Remove(db.Links.FirstOrDefault(x => x.Id == user_id));
-            db.SaveChanges();
-            user_id = 0;
-            return RedirectToAction("index", "Home", new { page = 1 });
+            _db.Entry(_userProfile).State = EntityState.Deleted;
+            _db.Entry(_userForm).State = EntityState.Deleted;
+            DataBase.DeleteData(_userId);
+            _userProfile = null;
+            _userForm = null;
+            _userProjects.Clear();
+            _userLinks.Clear();
+            _userId = 0;
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public ActionResult EditUserPage()
         {
-            var view = (user_projects, user_profile, user_links);
+            var view = (_userProjects, _userProfile, _userLinks);
             return View(view);
         }
 
         [HttpPost]
-        public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string User_position, string UserAbout)
+        public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string UserPosition, string UserAbout)
         {
-            var user_info = db.Users.FirstOrDefault(x => x.Id == user_id);
-            string path = fullPath + "\\Content\\img\\avatars";
+            _userProfile.ChangeData(UserName, UserPosition, UserAbout);
+            string path = _fullPath + "\\Content\\img\\avatars";
             if (UserAvatar != null)
             {
-                string UserAvatarName = "avatar" + user_profile.Id.ToString() + ".jpg";
+                string UserAvatarName = "avatar" + _userId.ToString() + ".jpg";
                 UserAvatar.SaveAs(Path.Combine(path, UserAvatarName));
-                user_info.avatarUrl = "/Content/img/avatars/" + UserAvatarName;
+                _userProfile.AvatarUrl = "/Content/img/avatars/" + UserAvatarName;
             }
-            user_info.Name = UserName;
-            user_info.position = User_position;
-            user_info.about = UserAbout;
-            var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
-            foreach (var project in user_projects_info)
-            {
-                project.user_name = UserName;
-            }
-            user_profile = user_info;
-            user_projects = user_projects_info;
-            db.SaveChanges();
-            return RedirectToAction("UserPage", "Home", new { item_id = user_id });
+            _db.Entry(_userProfile).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { userId = _userId });
         }
 
         [HttpGet]
         public ActionResult AddProject()
         {
-            List<string> view = new List<string>
-            {
-                user_profile.avatarUrl
-            };
-            return View(view);
+            string[] avatar = { _userProfile.AvatarUrl };
+            return View(avatar);
         }
         [HttpPost]
         public ActionResult AddProject(string Name,string Technos,string ProjectAbout, HttpPostedFileBase AvatarUrl)
         {
-            Project project = new Project()
-            {
-                Title = Name,
-                technology = Technos,
-                About = ProjectAbout,
-                user_name = user_profile.Name,
-                user_id = user_id,
-                selected = false
-            };
-            if (db.Projects.Count() > 0)
-            {
-                project.Id = db.Projects.AsEnumerable().Last().Id +1;
-            }
-            else
-            {
-                project.Id = 1;
-            }
+            var lastProject = _userProjects.AsEnumerable().LastOrDefault();
+            var projectId = lastProject == null ? 1 : lastProject.Id + 1;
+            Project project = new Project(projectId, Name, ProjectAbout, _userId, Technos);
             if (AvatarUrl != null)
             {
-                string path = fullPath + "\\Content\\img\\Projects_avatars";
-                string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
+                string path = _fullPath + "\\Content\\img\\Projects_avatars";
+                string ProjectAvatarName = "avatar" + projectId.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
             }
-            else
-            {
-                project.PhotoUrl = "/Content/img/title.jpg";
-            }
-            db.Projects.Add(project);
-            user_projects.Add(project);
-            db.SaveChanges();
-            return RedirectToAction("UserPage", "Home", new { item_id = user_id });
+            _userProjects.Add(project);
+            DataBase.AddProject(_userId, project);
+            _db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { userId = _userId });
         }
 
-        public ActionResult AllProjects(string order, int page = 1, int item_id = 0)
+        public ActionResult AllProjects(int userId,string order = "", int page = 1)
         {
-            User user = new User();
-            List<Project> projects = new List<Project>();
-            user = item_profile;
-            projects = item_projects;
-            if (user != null)
-            {
-                if (user.Id != item_id)
-                {
-                    user = db.Users.FirstOrDefault(x => x.Id == item_id);
-                    item_profile = user;
-                    if (user == null)
-                    {
-                        return Content("<h1>Страница не найдена</h1>");
-                    }
-                    else
-                    {
-                        projects = db.Projects.Where(x => x.user_id == item_id).ToList();
-                        item_projects = projects;
-                    }
-                }
-            }
-            else
-            {
-                user = db.Users.FirstOrDefault(x => x.Id == item_id);
-                if (user == null)
-                {
-                    return Content("<h1>Страница не найдена</h1>");
-                }
-                else
-                {
-                    projects = db.Projects.Where(x => x.user_id == item_id).ToList();
-                    item_profile = user;
-                    item_projects = projects;
-                }
-            }
-            ViewData["order"] = order;
-            if (String.IsNullOrEmpty(order))
-            {
-                List<Project> projects_list_ = new List<Project>();
-                for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
-                {
-                    if (i >= projects.Count)
-                    {
-                        break;
-                    }
-                    projects_list_.Add(projects[i]);
-                }
-                int count = projects.Count() / projectSize;
-                if (projects.Count() % projectSize > 0)
-                {
-                    count++;
-                }
-                if (count > 0)
-                {
-                    if (page > count)
-                    {
-                        return Content("<h1>Страница не найдена</h1>");
-                    }
-                    List<List<int>> pages_list = Paginations.paginations_list(count);
-                    List<int> pages = pages_list[page - 1];
-                    pages.Add(page);
-                    var view = (projects_list_, user, pages);
-                    return View(view);
-                }
-                else
-                {
-                    List<int> pages = new List<int> { 0 };
-                    var view = (projects_list_, user, pages);
-                    return View(view);
-                }
-            }
-            else
-            {
-                order = order.Trim().ToLower();
-                List<Project> this_page_projects_list = new List<Project>();
-                var user_projects_ = projects.Where(x => x.Title.ToLower().Contains(order) || (x.technology.ToLower().Contains(order))).ToList();
-                for (int i = (page - 1) * projectSize; i < (page) * projectSize; i++)
-                {
-                    if (i >= user_projects_.Count)
-                    {
-                        break;
-                    }
-                    this_page_projects_list.Add(user_projects_[i]);
-                }
-                int count = user_projects_.Count() / projectSize;
-                if (user_projects_.Count() % projectSize > 0)
-                {
-                    count++;
-                }
-                if (count > 0)
-                {
-                    if (page > count)
-                    {
-                        return Content("<h1>Страница не найдена</h1>");
-                    }
-                    List<List<int>> pages_list = Paginations.paginations_list(count);
-                    List<int> pages = pages_list[page - 1];
-                    pages.Add(page);
-                    var view = (this_page_projects_list, user, pages);
-                    return View(view);
-                }
-                else
-                {
-                    List<int> pages = new List<int> { 0 };
-                    var view = (this_page_projects_list, user, pages);
-                    return View(view);
-                }
-            }
+            int pageSize = 6;
+            string filterOrder = order.ToLower().Trim();
+            var user = userId == _userId? _userProfile: _db.Users.FirstOrDefault(x=>x.Id == userId);
+            var projects = userId == _userId? _userProjects: DataBase.GetProjects(user.Id);
+            projects = projects.Where(x=>x.Title.ToLower().Contains(filterOrder)).ToList();
+            List<Project> projectsOnPage = new List<Project>();
+            for (int i = (page - 1) * pageSize; i < Math.Min(projects.Count, page * pageSize); i++) projectsOnPage.Add(projects[i]);
+            int pagesCount = 1 + projects.Count / (pageSize + 1);
+            if (page > pagesCount) return Content("<h1>Страница не найдена</h1>");
+            var pages = Paginations.GetPagination(pagesCount, page);
+            pages.Add(page);
+            return View((projectsOnPage, user, pages,order));
         }
 
-        public ActionResult ProjectPage(int item_id = 0)
+        public ActionResult ProjectPage(int projectId,int userId)
         {
-            Project project = item_projects.FirstOrDefault(x => x.Id == item_id);
-            if(project == null)
-            {
-                project = db.Projects.FirstOrDefault(x => x.Id == item_id);
-                if (project == null)
-                {
-                    return Content("<h1>Страница не найдена</h1>");
-                }
-                else
-                {
-                    User user = db.Users.FirstOrDefault(x => x.Id == project.user_id);
-                    var item_projects = db.Projects.Where(x => x.user_id == user.Id).ToList();
-                    var other_projects = Reference.GetRange(item_projects, project);
-                    var view = (project,user,other_projects,user == user_profile);
-                    return View(view);
-                }
-            }
-            else
-            {
-                var other_projects = Reference.GetRange(item_projects, project);
-                var view = (project,item_profile,other_projects , item_profile == user_profile);
-                return View(view);
-            }
+            var user = _db.Users.FirstOrDefault(x => x.Id == userId);
+            var projects = DataBase.GetProjects(user.Id);
+            Project project = projects.FirstOrDefault(x => x.Id == projectId);
+            if (project == null) return Content("<h1>Страница не найдена</h1>");
+            var otherProjects = Reference.GetRange(projects, project);
+            return View((project, user, otherProjects, userId == _userId));
         }
         [HttpGet]
-        public ActionResult EditProjectPage(int item_id = 0)
+        public ActionResult EditProjectPage(int projectId)
         {
-            var project = item_projects.FirstOrDefault(x => x.Id == item_id);
-            List<string> avatar = new List<string>
-            {
-                user_profile.avatarUrl
-            };
-            var view = (project, avatar);
-            return View(view);
+            var project = _userProjects.FirstOrDefault(x => x.Id == projectId);
+            return View((project, _userProfile.AvatarUrl));
         }
         [HttpPost]
-        public ActionResult EditProjectPage(string Name, string Technos, string ProjectAbout, HttpPostedFileBase AvatarUrl, int item_id = 0)
+        public ActionResult EditProjectPage(string Name, string Technos, string ProjectAbout, HttpPostedFileBase AvatarUrl, int projectId)
         {
-            var project = db.Projects.FirstOrDefault(x => x.Id == item_id);
+            var project = _userProjects.FirstOrDefault(x => x.Id == projectId);
+            project.ChangeData(Name, ProjectAbout, Technos);
             if (AvatarUrl != null)
             {
-                string path = fullPath + "\\Content\\img\\Projects_avatars";
-                string ProjectAvatarName = "avatar" + project.Id.ToString() + ".jpg";
+                string path = _fullPath + "\\Content\\img\\Projects_avatars";
+                string ProjectAvatarName = "avatar" + projectId.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
             }
-            project.Title = Name;
-            project.technology = Technos;
-            project.About = ProjectAbout;
-            foreach (var proj in user_projects)
-            {
-                if (proj.Id == item_id)
-                {
-                    proj.Title = Name;
-                    proj.technology = Technos;
-                    proj.About = ProjectAbout;
-                    proj.PhotoUrl = project.PhotoUrl;
-                    break;
-                }
-            }
-            db.SaveChanges();
-            return RedirectToAction("ProjectPage", "Home", new { item_id = item_id });
+            DataBase.ChangeData(_userId, project);
+            _db.SaveChanges();
+            return RedirectToAction("ProjectPage", "Home", new { projectId , userId = _userId});
         }
 
-        public ActionResult DeleteProject(int item_id = 0)
+        public ActionResult DeleteProject(int projectId)
         {
-            var project = user_projects.Find(x => x.Id == item_id);
+            var project = _userProjects.Find(x => x.Id == projectId);
             if (!project.PhotoUrl.Contains("title"))
             {
-                System.IO.File.Delete(fullPath + project.PhotoUrl);
+                System.IO.File.Delete(_fullPath + project.PhotoUrl);
             }
-            db.Entry(project).State = EntityState.Deleted;
-            user_projects.Remove(project);
-            db.SaveChanges();
-            return RedirectToAction("UserPage", "Home", new { item_id  = user_id });
-        }
-
-        [HttpGet]
-        public ActionResult CodeConfirmation(string email,int a) {
-            List<string> view = new List<string>{email};
-            return View(view);
-        }
-
-        [HttpPost]
-        public ActionResult CodeConfirmation(string code) 
-        {
-            if (code == _Code)
-            {
-                if (db.Forms.Count() > 0)
-                {
-                    form.Id = db.Forms.AsEnumerable().Last().Id + 1;
-                }
-                else
-                {
-                    form.Id = 1;
-                }
-                user_id = form.Id;
-                db.Users.Add(user_profile);
-                db.Forms.Add(form);
-                db.SaveChanges();
-                return RedirectToAction("UserPage", "Home", new { item_id = user_id });
-            }
-            return RedirectToAction("CodeConfirmation", "Home", new {email = form.Email,a = 1});
+            DataBase.DeleteProject(_userId, projectId);
+            _userProjects.Remove(project);
+            _db.SaveChanges();
+            return RedirectToAction("UserPage", "Home", new { userId  = _userId });
         }
 
         [HttpGet]
@@ -560,74 +244,68 @@ namespace Sigma.Controllers
         }
 
         [HttpPost]
-        public ActionResult PasswordRecover(string email,string password)
+        public ActionResult PasswordRecover(string email, string password)
         {
-            form = db.Forms.FirstOrDefault(x => x.Email == email);
-            if(form != null)
-            {
-                if (form.Password != password)
-                {
-                    user_profile = db.Users.FirstOrDefault(x => x.Id == form.Id); 
-                    form.Password = password;
-                    db.Forms.Remove(form);
-                    db.Users.Remove(user_profile);
-                    db.SaveChanges();
-                    _Code = Generator.GenerateCode();
-                    mail.SendMessage(email, _Code);
-                    return RedirectToAction("CodeConfirmation", "Home", new { email = email ,a = 1});
-                }
-                return View();
-            }
-            return View();
+            _userForm = _db.Forms.FirstOrDefault(x => x.Email == email);
+            if (_userForm == null) return View();//Неверный логин
+            _userForm.Password = password;
+            var code = Generator.GenerateCode();
+            _userForm.RecoverCode = Convert.ToInt32(code);
+            _mail.SendMessage(email, code);
+            return RedirectToAction("CodeConfirmation", "Home", new { email, code });
+        }
+        [HttpGet]
+        public ActionResult CodeConfirmation(string email) {
+            string[] view = { email };
+            return View(view);
         }
 
+        [HttpPost]
+        public ActionResult CodeConfirmation(int code)
+        {
+            string[] view = { _userForm.Email };
+            if (code != _userForm.RecoverCode) return View(view);
+            _db.Entry(_userForm).State = EntityState.Modified;
+            _db.SaveChanges();
+            return RedirectToAction("SignIn");
+        }
         public ActionResult ExitProfile() {
-            user_id = 0;
-            return RedirectToAction("Index", "Home", new { page = 1 });
+            _userId = 0;
+            return RedirectToAction("Index");
         }
 
-        public void DeleteLink(string id_string = "")
+        public void DeleteLink(int id)
         {
-            var id = Convert.ToInt32(id_string.Substring(4));
-            var deleting_link = user_links.Find(x => x.Id == id);
-            if (deleting_link != null)
-            {
-                db.Entry(deleting_link).State = EntityState.Deleted;
-                user_links.Remove(deleting_link);
-            }
-            db.SaveChanges();
+            var deleting_link = _userLinks.Find(x => x.Id == id);
+            DataBase.DeleteLink(_userId,deleting_link.Id);
+            _userLinks.Remove(deleting_link);
+            _db.SaveChanges();
         }
-
-        public void GetProjects(string ids_array)
+        [HttpPost]
+        public void GetProjects(string idsArray_str)
         {
-            var user_projects_info = db.Projects.Where(x => x.user_id == user_id).ToList();
-            var ids_array_ = ids_array.Split(',');
-            if (ids_array.Length > 0)
+            var idsList = idsArray_str.Split(',');
+            for (int i = 0; i < idsList.Length; i++)
             {
-                for (int i = 0; i < ids_array_.Length; i++)
-                {
-                    ids_array_[i] = ids_array_[i].Substring(7);
-                }
+                idsList[i] = idsList[i].Substring(7);
             }
-            foreach (var project in user_projects)
+            foreach (var project in _userProjects)
             {
-                project.selected = ids_array_.Contains(project.Id.ToString());
+                project.Selected = idsList.Contains(project.Id.ToString());
+                DataBase.ChangeData(_userId,project);
             }
-            foreach (var project in user_projects_info)
-            {
-                project.selected = ids_array_.Contains(project.Id.ToString());
-            }
+            if (_userProjects.Count > 0) _db.SaveChanges();
         }
 
         public void AddLink(string Url,string id)
         {
-            Link link = Links.getLink(Url);
-            link.user_id = user_id;
+            Link link = LinksConverter.GetLink(Url);
+            link.UserId = _userId;
             id = id.Substring(4);
             link.Id = Convert.ToInt32(id);
-            db.Links.Add(link);
-            user_links.Add(link);
-            db.SaveChanges();
+            DataBase.AddLink(_userId, link);
+            _userLinks.Add(link);
+            _db.SaveChanges();
         }
     }
 }   

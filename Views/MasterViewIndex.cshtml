@@ -11,12 +11,12 @@
     <div class="header">
         <div class="header__row">
             <div class="header__title">
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__logo">
                         <span>σ</span>
                     </div>
                 </a>
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__info">
                         <div class="header__name">Sigma</div>
                         <div class="header__tagname">Where your portfolio starts</div>
@@ -35,7 +35,7 @@
                 Find specialists
             </p>
             <form asp-controller="Home" asp-action="Index">
-                <input type="text" name="order" value="@ViewData["order"]" placeholder="Search for skills or projects">
+                <input type="text" name="order" value="@Model.Item4" placeholder="Search for users">
                 <button type="submit" class="search">Search</button>
             </form>
         </div>

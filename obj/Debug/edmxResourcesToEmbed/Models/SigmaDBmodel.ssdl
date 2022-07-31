@@ -7,30 +7,8 @@
     <Property Name="Id" Type="int" Nullable="false" />
     <Property Name="Email" Type="nvarchar" MaxLength="250" />
     <Property Name="Password" Type="nvarchar" MaxLength="100" />
-  </EntityType>
-  <EntityType Name="Links">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
-    <Property Name="Provider" Type="nvarchar" MaxLength="350" />
-    <Property Name="Link" Type="nvarchar(max)" />
-    <Property Name="user_id" Type="int" />
-    <Property Name="provider_avatar" Type="nvarchar" MaxLength="300" />
-  </EntityType>
-  <EntityType Name="Projects">
-    <Key>
-      <PropertyRef Name="Id" />
-    </Key>
-    <Property Name="Id" Type="int" Nullable="false" />
-    <Property Name="Title" Type="nvarchar" MaxLength="128" />
-    <Property Name="technology" Type="nvarchar" MaxLength="64" />
-    <Property Name="PhotoUrl" Type="nvarchar" MaxLength="1024" />
-    <Property Name="Link" Type="nvarchar" MaxLength="1024" />
-    <Property Name="About" Type="nvarchar(max)" />
-    <Property Name="user_id" Type="int" />
-    <Property Name="user_name" Type="nvarchar" MaxLength="128" />
-    <Property Name="selected" Type="bit" />
+    <Property Name="UserId" Type="int" />
+    <Property Name="RecoverCode" Type="int" />
   </EntityType>
   <EntityType Name="Users">
     <Key>
@@ -44,8 +22,6 @@
   </EntityType>
   <EntityContainer Name="Хранилище SigmaDBModelContainer">
     <EntitySet Name="Forms" EntityType="Self.Forms" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
   </EntityContainer>
 </Schema>

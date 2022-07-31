@@ -3,9 +3,8 @@ function sendProjects() {
     let ids_array = [];
     projects_array.forEach(project => ids_array.push(String(project.id)));
     console.log(ids_array);
-    jQuery.ajax({
-        method: "GET",
-        url: "/Home/GetProjects",
-        data: "ids_array=" + ids_array
-    });
+    let formdata = new FormData();
+    formdata.append('idsArray_str', ids_array.toString());
+    console.log(ids_array);
+    axios.post('/Home/GetProjects', formdata);
 }

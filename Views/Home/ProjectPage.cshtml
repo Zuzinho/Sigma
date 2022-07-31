@@ -17,12 +17,12 @@
     <div class="header">
         <div class="header__row">
             <div class="header__title">
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__logo">
                         <span>σ</span>
                     </div>
                 </a>
-                <a href="@Url.Action("Index","Home",new {page = 1})">
+                <a href="@Url.Action("Index","Home")">
                     <div class="header__info">
                         <div class="header__name">Sigma</div>
                         <div class="header__tagname">Where your portfolio starts</div>
@@ -36,10 +36,10 @@
                 <div class="actions_dropdown">
                     <div class="actions">Actions</div>
                     <div class="actions_content">
-                         <a href="@Url.Action("EditProjectPage", "Home",new {item_id = Model.Item1.Id})"> 
+                         <a href="@Url.Action("EditProjectPage", "Home",new {projectId = Model.Item1.Id})"> 
                             <div class="edit">Edit this project</div>
                          </a>
-                         <a href="@Url.Action("DeleteProject", "Home",new {item_id = Model.Item1.Id})"> 
+                         <a href="@Url.Action("DeleteProject", "Home",new {projectId = Model.Item1.Id})"> 
                             <div class="delete">Delete project</div>
                          </a> 
                     </div>
@@ -50,13 +50,13 @@
         </div>
     </div>
     <div class="project">
-        <div class="user_name"><a class="user_link" href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> project</div>
+        <div class="user_name"><a class="user_link" href="@Url.Action("UserPage","Home",new {userId = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> project</div>
         <div class="container">
             <div class="project_title__row">
                 <div class="project_title">@Model.Item1.Title</div>
                 @if (true)
                 {
-                    var technos = Model.Item1.technology.Split(',');
+                    var technos = Model.Item1.Technology.Split(',');
                     <div class="project_technos__row">
                         @foreach (var techno in technos)
                         {
@@ -76,14 +76,14 @@
         </div>
     </div>
     <div class="container">
-        <div class="other_project_title">Other <a class="user_link" href="@Url.Action("UserPage","Home",new {item_id = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
+        <div class="other_project_title">Other <a class="user_link" href="@Url.Action("UserPage","Home",new {userId = Model.Item2.Id})">@(Model.Item2.Name.Split(' ')[0] + "’s")</a> projects</div>
         <div class="projects__row">
                 @foreach (var project in Model.Item3)
                 {
                     Markdown markdown = new Markdown();
                     string markdown_text = markdown.Transform(project.About);
-                    var technos = project.technology.Split(',');
-                    <a href="@Url.Action("ProjectPage", "Home", new { item_id = project.Id })" class="project__item-active">
+                    var technos = project.Technology.Split(',');
+                    <a href="@Url.Action("ProjectPage", "Home", new { projectId = project.Id })" class="project__item-active">
                         <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                         <div class="item__name">@project.Title</div>
                         <div class="item__techs">

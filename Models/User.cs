@@ -14,10 +14,24 @@ namespace Sigma.Models
     
     public partial class User
     {
+        public User() { }
+        public User(int id)
+        {
+            Id = id;
+            Name = "Jane Keptton";
+            AvatarUrl = "/Content/img/avatars/avatar0.jpg";
+            Position = "senior .Net programmer";
+        }
+        public void ChangeData(string UserName, string UserPosition, string UserAbout)
+        {
+            Name = UserName;
+            Position = UserPosition;
+            About = UserAbout;
+        }
         public int Id { get; set; }
         public string Name { get; set; }
-        public string avatarUrl { get; set; }
-        public string position { get; set; }
-        public string about { get; set; }
+        public string AvatarUrl { get; set; }
+        public string Position { get; set; }
+        public string About { get; set; }
     }
 }
