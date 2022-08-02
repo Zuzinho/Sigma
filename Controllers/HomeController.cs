@@ -19,14 +19,13 @@ namespace Sigma.Controllers
 
         private static Database1Entities _db;
 
-        private static readonly string _fullPath = "C:\\Users\\user\\Source\\Repos\\Sigma";
+        private static readonly string _directoryPath = "";
 
-        private static Mail _mail;
+        private static readonly Mail _mail = new Mail();
 
         public HomeController()
         {
             _db = new Database1Entities();
-            _mail = new Mail();
         }
 
         public ActionResult Index(string order = "", int page = 1)
@@ -139,7 +138,7 @@ namespace Sigma.Controllers
         public ActionResult EditUserPage(HttpPostedFileBase UserAvatar, string UserName, string UserPosition, string UserAbout)
         {
             _userProfile.ChangeData(UserName, UserPosition, UserAbout);
-            string path = _fullPath + "\\Content\\img\\avatars";
+            string path = _directoryPath + "\\Content\\img\\avatars";
             if (UserAvatar != null)
             {
                 string UserAvatarName = "avatar" + _userId.ToString() + ".jpg";
@@ -165,7 +164,7 @@ namespace Sigma.Controllers
             Project project = new Project(projectId, Name, ProjectAbout, _userId, Technos);
             if (AvatarUrl != null)
             {
-                string path = _fullPath + "\\Content\\img\\Projects_avatars";
+                string path = _directoryPath + "\\Content\\img\\Projects_avatars";
                 string ProjectAvatarName = "avatar" + projectId.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
@@ -198,7 +197,7 @@ namespace Sigma.Controllers
             var projects = DataBase.GetProjects(user.Id);
             Project project = projects.FirstOrDefault(x => x.Id == projectId);
             if (project == null) return Content("<h1>Страница не найдена</h1>");
-            var otherProjects = Reference.GetRange(projects, project);
+            var otherProjects = Reference.GetRange(projects, project,4);
             return View((project, user, otherProjects, userId == _userId));
         }
         [HttpGet]
@@ -214,7 +213,7 @@ namespace Sigma.Controllers
             project.ChangeData(Name, ProjectAbout, Technos);
             if (AvatarUrl != null)
             {
-                string path = _fullPath + "\\Content\\img\\Projects_avatars";
+                string path = _directoryPath + "\\Content\\img\\Projects_avatars";
                 string ProjectAvatarName = "avatar" + projectId.ToString() + ".jpg";
                 AvatarUrl.SaveAs(Path.Combine(path, ProjectAvatarName));
                 project.PhotoUrl = "/Content/img/Projects_avatars/" + ProjectAvatarName;
@@ -229,7 +228,7 @@ namespace Sigma.Controllers
             var project = _userProjects.Find(x => x.Id == projectId);
             if (!project.PhotoUrl.Contains("title"))
             {
-                System.IO.File.Delete(_fullPath + project.PhotoUrl);
+                System.IO.File.Delete(_directoryPath + project.PhotoUrl);
             }
             DataBase.DeleteProject(_userId, projectId);
             _userProjects.Remove(project);
@@ -271,11 +270,17 @@ namespace Sigma.Controllers
         }
         public ActionResult ExitProfile() {
             _userId = 0;
+            _userForm = null;
+            _userLinks = null;
+            _userProfile = null;
+            _userProjects = null;
             return RedirectToAction("Index");
         }
-
-        public void DeleteLink(int id)
+        [HttpPost]
+        public void DeleteLink(string idStr)
         {
+            idStr = idStr.Substring(4);
+            int id = Convert.ToInt32(idStr);
             var deleting_link = _userLinks.Find(x => x.Id == id);
             DataBase.DeleteLink(_userId,deleting_link.Id);
             _userLinks.Remove(deleting_link);
@@ -285,18 +290,22 @@ namespace Sigma.Controllers
         public void GetProjects(string idsArray_str)
         {
             var idsList = idsArray_str.Split(',');
-            for (int i = 0; i < idsList.Length; i++)
+            for (int i = 0; i < idsList.Length - 1; i++)
             {
                 idsList[i] = idsList[i].Substring(7);
             }
+            int countChange = 0;
             foreach (var project in _userProjects)
             {
+                bool wasSelected = project.Selected;
                 project.Selected = idsList.Contains(project.Id.ToString());
+                if (wasSelected == project.Selected) continue;
                 DataBase.ChangeData(_userId,project);
+                countChange++;
             }
-            if (_userProjects.Count > 0) _db.SaveChanges();
+            if (countChange > 0) _db.SaveChanges();
         }
-
+        [HttpPost]
         public void AddLink(string Url,string id)
         {
             Link link = LinksConverter.GetLink(Url);
@@ -308,4 +317,4 @@ namespace Sigma.Controllers
             _db.SaveChanges();
         }
     }
-}   
+}

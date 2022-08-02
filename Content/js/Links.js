@@ -81,15 +81,14 @@ plus.addEventListener("click", () => {
     document.getElementById("LinkAdd").value = "";
 })
 
-function deleteicon(id) {
-    if (confirm("Are you sure that you want to delete this link?")) {
-        ids.push(id);
-        var elem = document.getElementById(id);
-        elem.remove();
-        console.log(elem);
-        let formdata = new FormData();
-        console.log(elem.id);
-        formdata.append('id', elem.id);
-        axios.post('/Home/DeleteLink', formdata);
-    }
+function deleteicon(elem) {
+    if (!confirm("Are you sure that you want to delete this link?")) return;
+    var id = elem.id;
+    ids.push(id);
+    elem.remove();
+    console.log(elem);
+    let formdata = new FormData();
+    console.log(id);
+    formdata.append('idStr', id);
+    axios.post('/Home/DeleteLink', formdata);
 }

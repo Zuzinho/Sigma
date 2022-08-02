@@ -110,7 +110,7 @@ namespace Sigma
         public static void ChangeData(int userId,Project project)
         {
             string name = "ProjectsUser" + userId;
-            string sql = "UPDATE " + name + " SET Title = '" + project.Title + "', Technology = '" + project.Technology + "',PhotoUrl = '" + project.PhotoUrl + "',Link = '" + project.Url + "', About = '" + project.About + "'  WHERE Id = " + project.Id + "; ";
+            string sql = "UPDATE " + name + " SET Title = '" + project.Title + "', Technology = '" + project.Technology + "',PhotoUrl = '" + project.PhotoUrl + "',Link = '" + project.Url + "', About = '" + project.About + "', Selected = " + Convert.ToByte(project.Selected) + "  WHERE Id = " + project.Id + "; ";
             SqlConnection con = new SqlConnection(connection);
             con.Open();
             SqlCommand command = new SqlCommand(sql, con);

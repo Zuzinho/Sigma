@@ -552,7 +552,6 @@
     <Content Include="Content\img\title.jpg" />
     <Content Include="Content\js\Links.js" />
     <Content Include="Content\js\ChangeActive.js" />
-    <Content Include="Content\js\deleteicon.js" />
     <Content Include="Content\js\GetAvatar.js" />
     <Content Include="Content\js\markdown.js" />
     <Content Include="Content\js\searchProjects.js" />

@@ -89,15 +89,12 @@
     <div class="projects__row">
         @if (true)
         {
-            var sort_model = Sigma.Sorting.Selected_sort(Model.Item1);
-            for (int i = 0; i < sort_model.Count; i++)
+            var sort_model = Sigma.Sorting.Selected_sort(Model.Item1,Math.Min(Model.Item1.Count,6));
+            foreach (var project in sort_model)
             {
-                var project = sort_model[i];
-                if (i < 6)
-                {
-                    Markdown markdown = new Markdown();
-                    string markdown_text = markdown.Transform(project.About);
-                    var technos = project.Technology.Split(',');
+                Markdown markdown = new Markdown();
+                string markdown_text = markdown.Transform(project.About);
+                var technos = project.Technology.Split(',');
                     <a href="@Url.Action("ProjectPage", "Home", new { projectId = project.Id, userId = Model.Item2.Id })" class="project__item-active">
                         <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                         <div class="item__name">@project.Title</div>
@@ -109,7 +106,6 @@
                             </div>
                         <div class="item__distr">@Html.Raw(markdown_text)</div>
                     </a>
-                }
             }
         }
     </div>
