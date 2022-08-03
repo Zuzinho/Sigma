@@ -1,4 +1,5 @@
-﻿@{
+﻿@model      string[]
+@{
     Layout = null;
 }
 
@@ -37,6 +38,7 @@
     <div class="container">
         <div class="sign_up">
             <h1>Sign up</h1>
+            <div class="error">@Model[0]</div>
             <div class="sign__row">
                 <form method="post">
                     <div class="form__row">

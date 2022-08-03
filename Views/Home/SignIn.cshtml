@@ -1,4 +1,4 @@
-﻿
+﻿@model      string[]
 @{
     Layout = null;
 }
@@ -38,6 +38,7 @@
     <div class="container">
         <div class="sign_in">
             <h1>Sign in</h1>
+            <div class="error">@Model[0]</div>
             <div class="sign__row">
                 <form asp-controller="Home" asp-action="Sign_in" method="post">
                     <div class="form__row">

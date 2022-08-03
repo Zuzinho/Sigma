@@ -104,6 +104,11 @@ body{
 	font-size: 36px;
 	line-height: 49px;
 }
+.error {
+	margin: 10px 0 0 0;
+	color: red;
+	font-size: 14px;
+}
 .sign__row {
 	display: flex;
 	margin: 10px 0 0 0;

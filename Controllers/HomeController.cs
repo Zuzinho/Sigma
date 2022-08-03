@@ -59,14 +59,16 @@ namespace Sigma.Controllers
         [HttpGet]
         public ActionResult SignUp()
         {
-            return View();
+            string[] error = { "" };
+            return View(error);
         }
 
         [HttpPost]
         public ActionResult SignUp(string email, string password)
         {
             _userForm = _db.Forms.FirstOrDefault(x => x.Email == email);
-            if (_userForm != null) return View(); // Уже используется
+            string[] error = { "This email is already used" };
+            if (_userForm != null) return View(error);
             _userForm = new Form()
             {
                 Email = email,
@@ -91,16 +93,18 @@ namespace Sigma.Controllers
         [HttpGet]
         public ActionResult SignIn()
         {
-            return View();
+            string[] error = { "" };
+            return View(error);
         }
 
         [HttpPost]
         public ActionResult SignIn(string email, string password)
         {
+            string[] error = { "Incorrect email or password" };
             email = email.Trim();
             _userForm = _db.Forms.FirstOrDefault(x=>x.Email == email);
-            if (_userForm == null) return View();//Неверный логин или пароль
-            if(_userForm.Password != password) return View();//Неверный логин или пароль
+            if (_userForm == null) return View(error);//Неверный логин или пароль
+            if(_userForm.Password != password) return View(error);//Неверный логин или пароль
             _userId = (int)_userForm.UserId;
             _userProfile = _db.Users.FirstOrDefault(x=>x.Id == _userId);
             _userProjects = DataBase.GetProjects(_userId);
