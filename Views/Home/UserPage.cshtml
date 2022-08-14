@@ -1,4 +1,5 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User, bool, List<Sigma.Models.Link>>
+﻿@model ValueTuple<User, bool>
+@using Sigma.Models;
 @using MarkdownSharp;
 @{
     Layout = "//Views//MasterViewUserPage.cshtml";
@@ -7,12 +8,12 @@
 <div class="header">
     <div class="header__row">
         <div class="header__title">
-            <a href="@Url.Action("Index","Home")">
+            <a href="@Url.Action("Index", "Home")">
                 <div class="header__logo">
                     <span>σ</span>
                 </div>
             </a>
-            <a href="@Url.Action("Index","Home")">
+            <a href="@Url.Action("Index", "Home")">
                 <div class="header__info">
                     <div class="header__name">Sigma</div>
                     <div class="header__tagname">Where your portfolio starts</div>
@@ -20,7 +21,7 @@
             </a>
         </div>
         <div class="header__links">
-            @if (Model.Item3)
+            @if (Model.Item2)
             {
                 <a href="@Url.Action("MyPortfolio", "Home")" class="own_portfolio">My portfolio</a>
             }
@@ -28,50 +29,51 @@
             {
                 <a href="@Url.Action("MyPortfolio", "Home")" class="my_portfolio">My portfolio</a>
             }
-            @if (Model.Item3)
+            @if (Model.Item2)
             {
                 <div class="actions_dropdown">
                     <div class="actions">Actions</div>
                     <div class="actions_content">
-                        <a href="@Url.Action("EditUserPage","Home")">
+                        <a href="@Url.Action("EditUserPage", "Home")">
                             <div class="edit">Edit my profile</div>
                         </a>
-                        <a href="@Url.Action("AddProject","Home")">
+                        <a href="@Url.Action("AddProject", "Home")">
                             <div class="add_project">Add project</div>
                         </a>
-                        <a href="@Url.Action("ExitProfile","Home")">
+                        <a href="@Url.Action("ExitProfile", "Home")">
                             <div class="exit_profile">Exit profile</div>
                         </a>
-                        <a href="@Url.Action("DeleteProfile" , "Home")">
+                        <a href="@Url.Action("DeleteProfile", "Home")">
                             <div class="delete">Delete profile</div>
                         </a>
                     </div>
                 </div>
             }
-            <a href="@Url.Action("AboutPage","Home")" class="about">About</a>
+            <a href="@Url.Action("AboutPage", "Home")" class="about">About</a>
         </div>
     </div>
 </div>
 <div class="container">
     <div class="user_info__row">
         <div class="user_title">
+            @{User user = @Model.Item1;};
             <div class="user_image">
-                <image class="image" src="@Model.Item2.AvatarUrl" alt=""></image>
+                <image class="image" src="@user.AvatarUrl" alt=""></image>
             </div>
             <div class="user_info">
-                <div class="user_name">@Model.Item2.Name</div>
-                <div class="user_position">@Model.Item2.Position</div>
+                <div class="user_name">@user.Name</div>
+                <div class="user_position">@user.Position</div>
             </div>
         </div>
         <div class="user_links">
-            @foreach (var link in Model.Item4)
-                {
+            @foreach (var link in user.Links)
+            {
                 <a href="@link.Url" target="_blanc">
                     <div class="user_link_border">
                         <image class="user_link_image" src="@link.ProviderAvatarUrl" alt=""></image>
                     </div>
                 </a>
-                }
+            }
         </div>
     </div>
 </div>
@@ -80,22 +82,23 @@
         @if (true)
         {
             Markdown markdown = new Markdown();
-            string markdown_text = markdown.Transform(Model.Item2.About);
+            string markdown_text = markdown.Transform(user.About);
             <div class="markdown__text">@Html.Raw(markdown_text)</div>
         }
     </div>
 </div>
 <div class="container">
     <div class="projects__row">
-        @if (true)
-        {
-            var sort_model = Sigma.Sorting.Selected_sort(Model.Item1,Math.Min(Model.Item1.Count,6));
-            foreach (var project in sort_model)
+            @{
+                var projects = user.Projects;
+                var sort_model = Sigma.Sorting.Selected_sort(projects, Math.Min(projects.Count, 6));
+            }
+            @foreach (var project in sort_model)
             {
                 Markdown markdown = new Markdown();
                 string markdown_text = markdown.Transform(project.About);
                 var technos = project.Technology.Split(',');
-                    <a href="@Url.Action("ProjectPage", "Home", new { projectId = project.Id, userId = Model.Item2.Id })" class="project__item-active">
+                    <a href="@Url.Action("ProjectPage", "Home", new { projectId = project.Id, userId = user.Id })" class="project__item-active">
                         <div class="item__image" style="background-image:url('@project.PhotoUrl')"></div>
                         <div class="item__name">@project.Title</div>
                         <div class="item__techs">
@@ -107,14 +110,13 @@
                         <div class="item__distr">@Html.Raw(markdown_text)</div>
                     </a>
             }
-        }
     </div>
 </div>
-@if (Model.Item1.Count > 6)
+@if (projects.Count > 6)
 {
     <div class="all_projects_block">
         <div class="container">
-            <a href="@Url.Action("AllProjects","Home",new {userId = Model.Item2.Id})" class="all_projects">
+            <a href="@Url.Action("AllProjects","Home",new {userId = user.Id})" class="all_projects">
                 See all
             </a>
         </div>

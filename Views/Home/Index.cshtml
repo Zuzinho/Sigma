@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<List<Sigma.Models.Project>>, List<Sigma.Models.User>, List<int>,string>
+﻿@model ValueTuple<List<Sigma.Models.User>, List<int>,string>
 @using Sigma;
 @{
     Layout = "//Views//MasterViewIndex.cshtml";
@@ -6,13 +6,13 @@
 
 <div class="portfolios">
     <div class="portfolios_title">Last Portfolios</div>
-    @if (Model.Item2.Count > 0)
+    @if (Model.Item1.Count > 0)
     {
 <div class="portfolios__row">
-    @for (int i=0;i<Model.Item2.Count;i++)
+    @for (int i=0;i<Model.Item1.Count;i++)
     {
-        var user = Model.Item2[i];
-        var userProjects = Model.Item1[i];
+        var user = Model.Item1[i];
+        var userProjects = user.Projects;
         var sortedUserProjects = Sorting.Selected_sort(userProjects, Math.Min(userProjects.Count, 3));
 
         <a class="user_page" href="@Url.Action("UserPage", "Home", new { userId = user.Id })">
@@ -43,7 +43,7 @@
             </div>
         </a>
     }
-    @if (Model.Item2.Count % 3 == 2)
+    @if (Model.Item1.Count % 3 == 2)
     {
         <a class="user_page" hidden>
 
@@ -65,38 +65,38 @@
     <div class="page_turner__row pages">
         <div class="pages__arrow_left"></div>
         <div class="pages__values">
-            @if (Model.Item3.Count > 1)
+            @if (Model.Item2.Count > 1)
             {
-                int current_page = Model.Item3.Last();
-                Model.Item3.RemoveAt(Model.Item3.Count - 1);
+                int current_page = Model.Item2.Last();
+                Model.Item2.RemoveAt(Model.Item2.Count - 1);
                 if (current_page > 1)
                 {
-                    <a href="@Url.Action("index", "Home", new { order = @Model.Item4,page = current_page - 1 })" class="previous_page"></a>
+                    <a href="@Url.Action("index", "Home", new { order = @Model.Item3,page = current_page - 1 })" class="previous_page"></a>
                 }
                 <div class="pages_list">
-                    @foreach (int page in Model.Item3)
+                    @foreach (int page in Model.Item2)
                     {
                         if (page != current_page && page > 0)
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item3, page = page })" class="page_value">@page</a>
                         }
                         else if (page == 0)
                         {
                             <span class="page_value">...</span>
                         }
-                        else if (page == Model.Item3.Max())
+                        else if (page == Model.Item2.Max())
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="current_last_page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item3, page = page })" class="current_last_page_value">@page</a>
                         }
                         else
                         {
-                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = page })" class="current_page_value">@page</a>
+                            <a href="@Url.Action("Index", "Home", new { order = @Model.Item3, page = page })" class="current_page_value">@page</a>
                         }
                     }
                 </div>
-                if (current_page < Model.Item3.Max())
+                if (current_page < Model.Item2.Max())
                 {
-                    <a href="@Url.Action("Index", "Home", new { order = @Model.Item4, page = current_page + 1 })" class="next_page"></a>
+                    <a href="@Url.Action("Index", "Home", new { order = @Model.Item3, page = current_page + 1 })" class="next_page"></a>
                 }
             }
         </div>

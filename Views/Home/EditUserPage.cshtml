@@ -1,4 +1,4 @@
-﻿@model ValueTuple<List<Sigma.Models.Project>, Sigma.Models.User,List<Sigma.Models.Link>>
+﻿@model Sigma.Models.User
 @{
     Layout = "";
 }
@@ -35,33 +35,35 @@
         </div>
     </div>
     @using (Html.BeginForm("EditUserPage", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
-        List<int> newest_id = new List<int>();
-        for (int i = (Model.Item2.Id - 1) * 10 + 1; i < Model.Item2.Id * 10 + 1; i++)
-        {
-            var exist = Model.Item3.Find(x => x.Id == i);
-            if (exist == null)
-            {
+                {
+                    var user = Model;
+                    var links = user.Links;
+        var projects = user.Projects;
+                    for (int i = (user.Id - 1) * 10 + 1; i < user.Id * 10 + 1; i++)
+                    {
+                        var exist = links.Find(x => x.Id == i);
+                        if (exist == null)
+                        {
                 <div class="id" id="newest_id">@("link" + i.ToString())</div>
             }
-        }
+    }
         <div class="container">
             <div class="user_info__row">
                 <div class="user_title">
                     <div class="input_image__row">
                         <div class="user_image">
                             <input type="file" class="image_input" name="UserAvatar" onchange="GetAvatar(event)" accept="image/*">
-                            <img class="image" src="@Model.Item2.AvatarUrl" alt="">
+                            <img class="image" src="@user.AvatarUrl" alt="">
                         </div>
                     </div>
                     <div class="user_info">
-                        <input value="@Model.Item2.Name" name="UserName" type="text" class="user_name">
-                        <input type="text" value="@Model.Item2.Position" name="UserPosition" class="user_position">
+                        <input value="@user.Name" name="UserName" type="text" class="user_name">
+                        <input type="text" value="@user.Position" name="UserPosition" class="user_position">
                     </div>
                 </div>
                 <div class="user_links">
                     <div class="user_links_value">
-                        @foreach (var link in Model.Item3)
+                        @foreach (var link in links)
                         {
                             string link_id = "link" + link.Id.ToString();
                             <div id="@link_id" class="user_link_border-active">
@@ -87,7 +89,7 @@
                     <a href="#editorPreview" class="editor-tabs__item">Preview</a>
                 </div>
                 <textarea id="editorForm" placeholder="Write here your markdown"
-                          class="markdown__text_input" name="UserAbout">@Model.Item2.About</textarea>
+                          class="markdown__text_input" name="UserAbout">@user.About</textarea>
                 <div id="editorPreview" class="editor-content__item"></div>
             </div>
         </div>
@@ -100,7 +102,7 @@
                 </div>
             </div>
             <div class="projects__row">
-                @foreach (var project in Model.Item1)
+                @foreach (var project in projects)
                 {
                     string project_id = "project" + project.Id.ToString();
                     if (project.Selected)
@@ -122,7 +124,7 @@
                         </div>
                     }
                 }
-                @if (Model.Item1.Count % 3 == 2)
+                @if (projects.Count % 3 == 2)
                 {
                     <div class="project__item" hidden></div>
                 }

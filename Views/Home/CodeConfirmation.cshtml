@@ -7,7 +7,7 @@
 
 <html>
 <head>
-    <title>Sign In</title>
+    <title>Code confirmation</title>
     <link rel="stylesheet" href="~/Content/css/code_confirmation.css">
     <link href='https://fonts.googleapis.com/css?family=Noto Sans' rel='stylesheet'>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
@@ -39,6 +39,7 @@
         <div class="sign_in">
             <h1>We have sent passcode to  <span class="email">@Model[0]</span></h1>
             <div class="code_disc">Check your email and past here the code you got. <a class="ref_back" href="@Url.Action("SignUp","Home")">Change email adress</a>.</div>
+            <div class="error">@Model[1]</div>
             <form method="post" id="SendCodeForm">
                 <input type="text" class="password" name="code" placeholder="Write code here" required>
                 <button type="submit" id="btn1" class="button">Continue</button>

@@ -9,6 +9,7 @@ namespace Sigma
     {
         private static string connection = "data source=(LocalDB)\\MSSQLLocalDB;attachdbfilename=" +
             "|DataDirectory|\\SigmaDB.mdf;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework";
+
         private static Project _initProject(SqlDataReader reader)
         {
             int id = (int)reader.GetValue(0);
@@ -29,6 +30,23 @@ namespace Sigma
             int userId = (int)reader.GetValue(3);
             string ProviderAvatarUrl = (string)reader.GetValue(4);
             return new Link(id, provider,url,userId,ProviderAvatarUrl);
+        }
+        private static User _initUser(SqlDataReader reader)
+        {
+            int id = (int)reader.GetValue(0);
+            string Name = (string)reader.GetValue(1);
+            string AvatarUrl = (string)reader.GetValue(2);
+            string Position = (string)reader.GetValue(3);
+            string About = (string)reader.GetValue(4);
+            return new User(id, Name, AvatarUrl, Position, About);
+        }
+        private static Form _initForm(SqlDataReader reader)
+        {
+            int id = (int)reader.GetValue(0);
+            string email = (string)reader.GetValue(1);
+            string password = (string)reader.GetValue(2);
+            int? recoverCode = (int?)reader.GetValue(3);
+            return new Form(id, email, password, recoverCode);
         }
 
         public static void CreateProjectsTable(int userId)
@@ -51,6 +69,7 @@ namespace Sigma
             command.ExecuteNonQuery();
             con.Close();
         }
+
         public static void AddProject(int userId, Project project)
         {
             string name = "ProjectsUser" + userId;
@@ -75,6 +94,7 @@ namespace Sigma
             command.ExecuteNonQuery();
             con.Close();
         }
+
         public static List<Project> GetProjects(int userId)
         {
             string name = "ProjectsUser" + userId;
@@ -107,6 +127,36 @@ namespace Sigma
             con.Close();
             return list;
         }
+        public static List<User> GetUsers()
+        {
+            string sql = "SELECT * FROM Users";
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            var reader = command.ExecuteReader();
+            List<User> list = new List<User>();
+            while (reader.Read())
+            {
+                User user = _initUser(reader);
+                user.InitData();
+                list.Add(user);
+            }
+            con.Close();
+            return list;
+        }
+        public static Form GetForm(int userId)
+        {
+            string sql = "SELECT * FROM Forms WHERE Id = " + userId.ToString();
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            var reader = command.ExecuteReader();
+            Form form = reader.Read()?_initForm(reader):null;
+            con.Close();
+            return form;
+        }
+
+
         public static void ChangeData(int userId,Project project)
         {
             string name = "ProjectsUser" + userId;
@@ -127,6 +177,25 @@ namespace Sigma
             command.ExecuteNonQuery();
             con.Close();
         }
+        public static void ChangeData(User user)
+        {
+            string sql = "UPDATE Users SET Name = '" + user.Name + "', AvatarUrl = '" + user.AvatarUrl + "',Position = '" + user.Position + "', About = '" + user.About + "'  WHERE Id = " + user.Id + "; ";
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            command.ExecuteNonQuery();
+            con.Close();
+        }
+        public static void ChangeData(Form form)
+        {
+            string sql = "UPDATE Forms SET Email = '" + form.Email + "', Password = '" + form.Password + "',RecoverCode = " + form.RecoverCode + " WHERE Id = " + form.Id + "; ";
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            command.ExecuteNonQuery();
+            con.Close();
+        }
+
         public static void DeleteProject(int userId,int projectId)
         {
             string name = "ProjectsUser" + userId;
@@ -147,6 +216,14 @@ namespace Sigma
             command.ExecuteNonQuery();
             con.Close();
         }
+        public static void DeleteData(int userId)
+        {
+            _deleteProjects(userId);
+            _deleteLinks(userId);
+            _deleteUser(userId);
+            _deleteForm(userId);
+        }
+
         private static void _deleteProjects(int userId)
         {
             string name = "ProjectsUser" + userId;
@@ -167,10 +244,24 @@ namespace Sigma
             command.ExecuteNonQuery();
             con.Close();
         }
-        public static void DeleteData(int userId)
+        private static void _deleteForm(int userId)
         {
-            _deleteProjects(userId);
-            _deleteLinks(userId);
+            string sql = "DELETE Forms WHERE UserId = " + userId.ToString();
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            command.ExecuteNonQuery();
+            con.Close();
         }
+        private static void _deleteUser(int userId)
+        {
+            string sql = "DELETE Users WHERE Id = " + userId.ToString();
+            SqlConnection con = new SqlConnection(connection);
+            con.Open();
+            SqlCommand command = new SqlCommand(sql, con);
+            command.ExecuteNonQuery();
+            con.Close();
+        }
+
     }
 }
